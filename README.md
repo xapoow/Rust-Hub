@@ -3,6 +3,8 @@
 Static React landing for a YouTube playlist with Rust base design videos.
 The interface includes a persisted light/dark theme toggle.
 It also shows a countdown to the next scheduled playlist sync window.
+Videos can be searched, sorted, filtered by inferred tags, and saved as local
+favorites.
 
 ## Commands
 

@@ -2,11 +2,25 @@ import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 const DATA_URL = `${import.meta.env.BASE_URL}data/playlist.json`
+const FAVORITES_STORAGE_KEY = 'rust-bases-favorites'
 const FETCH_INTERVAL_MS = 30 * 60 * 1000
 const SITE_TITLE = 'Base guides Rust'
 const THEME_STORAGE_KEY = 'rust-bases-theme'
 const PLAYLIST_URL =
   'https://www.youtube.com/playlist?list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd'
+
+const TAG_RULES = [
+  ['solo', /\bsolo\b/i],
+  ['duo', /\bduo\b/i],
+  ['2x2', /\b2\s*x\s*2\b/i],
+  ['3x3', /\b3\s*x\s*3\b/i],
+  ['starter', /starter|старт/i],
+  ['bunker', /bunker|бункер/i],
+  ['opencore', /opencore|опенкор/i],
+  ['cheap', /cheap|деш/i],
+  ['2025', /\b2025\b/],
+  ['2026', /\b2026\b/],
+]
 
 function getInitialTheme() {
   try {
@@ -20,6 +34,20 @@ function getInitialTheme() {
   }
 
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+function getInitialFavorites() {
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(FAVORITES_STORAGE_KEY) ?? '[]')
+
+    if (Array.isArray(parsed)) {
+      return parsed.filter((id) => typeof id === 'string')
+    }
+  } catch {
+    return []
+  }
+
+  return []
 }
 
 function getRoute() {
@@ -64,6 +92,26 @@ function formatCountdown(milliseconds) {
   const seconds = totalSeconds % 60
 
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+function getVideoTags(video) {
+  const text = `${video.title} ${video.author}`
+
+  return TAG_RULES.filter(([, pattern]) => pattern.test(text)).map(([tag]) => tag)
+}
+
+function sortVideos(videos, sortMode) {
+  return [...videos].sort((firstVideo, secondVideo) => {
+    if (sortMode === 'oldest') {
+      return new Date(firstVideo.publishedAt) - new Date(secondVideo.publishedAt)
+    }
+
+    if (sortMode === 'title') {
+      return firstVideo.title.localeCompare(secondVideo.title, 'ru')
+    }
+
+    return new Date(secondVideo.publishedAt) - new Date(firstVideo.publishedAt)
+  })
 }
 
 function App() {
@@ -133,14 +181,14 @@ function App() {
   }
 
   if (status === 'loading') {
-    return <StatusView title="Загружаем плейлист" theme={theme} onThemeToggle={toggleTheme} />
+    return <StatusView title="Loading playlist" theme={theme} onThemeToggle={toggleTheme} />
   }
 
   if (status === 'error') {
     return (
       <StatusView
-        title="Плейлист не загрузился"
-        detail={error || 'Проверьте, что data/playlist.json доступен после сборки.'}
+        title="Playlist failed to load"
+        detail={error || 'Check that data/playlist.json is available after build.'}
         theme={theme}
         onThemeToggle={toggleTheme}
       />
@@ -150,8 +198,8 @@ function App() {
   if (!playlist?.videos?.length) {
     return (
       <StatusView
-        title="В плейлисте нет видео"
-        detail="После обновления YouTube-плейлиста запустите синхронизацию данных."
+        title="No videos in playlist"
+        detail="Run playlist sync after updating the YouTube playlist."
         theme={theme}
         onThemeToggle={toggleTheme}
       />
@@ -186,16 +234,160 @@ function StatusView({ title, detail, theme, onThemeToggle }) {
 }
 
 function HomePage({ playlist, theme, onThemeToggle }) {
+  const [activeTag, setActiveTag] = useState('all')
+  const [favorites, setFavorites] = useState(getInitialFavorites)
+  const [query, setQuery] = useState('')
+  const [sortMode, setSortMode] = useState('newest')
+  const favoriteIds = useMemo(() => new Set(favorites), [favorites])
+  const enrichedVideos = useMemo(
+    () =>
+      playlist.videos.map((video) => ({
+        ...video,
+        tags: getVideoTags(video),
+      })),
+    [playlist.videos],
+  )
+  const availableTags = useMemo(
+    () => [...new Set(enrichedVideos.flatMap((video) => video.tags))].sort(),
+    [enrichedVideos],
+  )
+  const visibleVideos = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase()
+    const filteredVideos = enrichedVideos.filter((video) => {
+      const matchesQuery =
+        !normalizedQuery ||
+        `${video.title} ${video.author}`.toLowerCase().includes(normalizedQuery)
+      const matchesTag =
+        activeTag === 'all' ||
+        (activeTag === 'favorites' ? favoriteIds.has(video.id) : video.tags.includes(activeTag))
+
+      return matchesQuery && matchesTag
+    })
+
+    return sortVideos(filteredVideos, sortMode)
+  }, [activeTag, enrichedVideos, favoriteIds, query, sortMode])
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites))
+    } catch {
+      // Ignore storage errors; favorites still work for the current session.
+    }
+  }, [favorites])
+
+  const toggleFavorite = (videoId) => {
+    setFavorites((currentFavorites) =>
+      currentFavorites.includes(videoId)
+        ? currentFavorites.filter((favoriteId) => favoriteId !== videoId)
+        : [...currentFavorites, videoId],
+    )
+  }
+
   return (
     <main className="shell">
       <Header playlist={playlist} theme={theme} onThemeToggle={onThemeToggle} />
 
-      <section className="video-grid" aria-label="Видео плейлиста">
-        {playlist.videos.map((video) => (
-          <VideoCard key={video.id} video={video} />
+      <PlaylistControls
+        activeTag={activeTag}
+        availableTags={availableTags}
+        favoriteCount={favorites.length}
+        query={query}
+        resultCount={visibleVideos.length}
+        setActiveTag={setActiveTag}
+        setQuery={setQuery}
+        setSortMode={setSortMode}
+        sortMode={sortMode}
+        totalCount={playlist.videos.length}
+      />
+
+      <section className="video-grid" aria-label="Playlist videos">
+        {visibleVideos.map((video) => (
+          <VideoCard
+            favorite={favoriteIds.has(video.id)}
+            key={video.id}
+            onFavoriteToggle={toggleFavorite}
+            video={video}
+          />
         ))}
       </section>
+
+      {!visibleVideos.length ? (
+        <div className="empty-results">No videos match the current search and filters.</div>
+      ) : null}
     </main>
+  )
+}
+
+function PlaylistControls({
+  activeTag,
+  availableTags,
+  favoriteCount,
+  query,
+  resultCount,
+  setActiveTag,
+  setQuery,
+  setSortMode,
+  sortMode,
+  totalCount,
+}) {
+  return (
+    <section className="playlist-controls" aria-label="Playlist controls">
+      <div className="control-row">
+        <label className="search-box">
+          <span>Search</span>
+          <input
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Title or author"
+            type="search"
+            value={query}
+          />
+        </label>
+
+        <label className="sort-box">
+          <span>Sort</span>
+          <select onChange={(event) => setSortMode(event.target.value)} value={sortMode}>
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="title">Title A-Z</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="tag-list" aria-label="Tags">
+        <FilterButton active={activeTag === 'all'} onClick={() => setActiveTag('all')}>
+          All
+        </FilterButton>
+        <FilterButton
+          active={activeTag === 'favorites'}
+          disabled={favoriteCount === 0}
+          onClick={() => setActiveTag('favorites')}
+        >
+          Favorites {favoriteCount}
+        </FilterButton>
+        {availableTags.map((tag) => (
+          <FilterButton active={activeTag === tag} key={tag} onClick={() => setActiveTag(tag)}>
+            {tag}
+          </FilterButton>
+        ))}
+      </div>
+
+      <p className="result-count">
+        Showing {resultCount} of {totalCount}
+      </p>
+    </section>
+  )
+}
+
+function FilterButton({ active, children, disabled = false, onClick }) {
+  return (
+    <button
+      className={active ? 'filter-chip active' : 'filter-chip'}
+      disabled={disabled}
+      onClick={onClick}
+      type="button"
+    >
+      {children}
+    </button>
   )
 }
 
@@ -206,7 +398,7 @@ function Header({ playlist, theme, onThemeToggle }) {
         <p className="eyebrow">YouTube playlist</p>
         <h1>{SITE_TITLE}</h1>
         <p className="subtitle">
-          {playlist.videos.length} видео по Rust base design от {playlist.channel.name}
+          {playlist.videos.length} videos about Rust base design by {playlist.channel.name}
         </p>
         <FetchCountdown syncedAt={playlist.syncedAt} />
       </div>
@@ -214,7 +406,7 @@ function Header({ playlist, theme, onThemeToggle }) {
       <div className="header-actions">
         <ThemeToggle theme={theme} onToggle={onThemeToggle} />
         <a className="playlist-link" href={PLAYLIST_URL} target="_blank" rel="noreferrer">
-          Открыть YouTube
+          Open YouTube
         </a>
       </div>
     </header>
@@ -233,9 +425,9 @@ function FetchCountdown({ syncedAt }) {
 
   return (
     <div className="fetch-countdown" aria-live="polite">
-      <span>Следующий fetch примерно через</span>
+      <span>Next fetch in about</span>
       <strong>{formatCountdown(nextFetchAt - now)}</strong>
-      {syncedAt ? <span>Последний sync: {formatDateTime(syncedAt)}</span> : null}
+      {syncedAt ? <span>Last sync: {formatDateTime(syncedAt)}</span> : null}
     </div>
   )
 }
@@ -255,23 +447,42 @@ function ThemeToggle({ theme, onToggle }) {
   )
 }
 
-function VideoCard({ video }) {
+function VideoCard({ favorite, onFavoriteToggle, video }) {
   return (
-    <a className="video-card" href={`#/video/${encodeURIComponent(video.id)}`}>
-      <span className="thumb-wrap">
-        <img src={video.thumbnailUrl} alt="" loading="lazy" />
-        <span className="play-badge" aria-hidden="true">
-          ▶
+    <article className="video-card">
+      <a className="video-card-link" href={`#/video/${encodeURIComponent(video.id)}`}>
+        <span className="thumb-wrap">
+          <img src={video.thumbnailUrl} alt="" loading="lazy" />
+          <span className="play-badge" aria-hidden="true">
+            Play
+          </span>
         </span>
-      </span>
-      <span className="video-meta">
-        <strong>{video.title}</strong>
-        <span>
-          {video.author}
-          {video.publishedAt ? ` · ${formatDate(video.publishedAt)}` : ''}
+        <span className="video-meta">
+          <strong>{video.title}</strong>
+          <span>
+            {video.author}
+            {video.publishedAt ? ` · ${formatDate(video.publishedAt)}` : ''}
+          </span>
         </span>
-      </span>
-    </a>
+      </a>
+
+      <div className="card-actions">
+        <div className="card-tags" aria-label="Video tags">
+          {video.tags.length
+            ? video.tags.map((tag) => <span key={tag}>{tag}</span>)
+            : <span>untagged</span>}
+        </div>
+        <button
+          className={favorite ? 'favorite-button active' : 'favorite-button'}
+          onClick={() => onFavoriteToggle(video.id)}
+          type="button"
+          aria-pressed={favorite}
+          aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          {favorite ? 'Saved' : 'Save'}
+        </button>
+      </div>
+    </article>
   )
 }
 
@@ -280,10 +491,10 @@ function VideoPage({ selectedVideo, requestedVideoId, theme, onThemeToggle }) {
     return (
       <main className="shell status-shell">
         <section className="status-panel">
-          <p className="eyebrow">Видео не найдено</p>
+          <p className="eyebrow">Video not found</p>
           <h1>{requestedVideoId}</h1>
           <a className="playlist-link" href="#/">
-            Вернуться к сетке
+            Back to grid
           </a>
         </section>
       </main>
@@ -292,12 +503,12 @@ function VideoPage({ selectedVideo, requestedVideoId, theme, onThemeToggle }) {
 
   return (
     <main className="shell">
-      <nav className="top-nav" aria-label="Навигация">
-        <a href="#/">← Все видео</a>
+      <nav className="top-nav" aria-label="Navigation">
+        <a href="#/">Back to videos</a>
         <div className="nav-actions">
           <ThemeToggle theme={theme} onToggle={onThemeToggle} />
           <a href={selectedVideo.youtubeUrl} target="_blank" rel="noreferrer">
-            Смотреть на YouTube
+            Watch on YouTube
           </a>
         </div>
       </nav>
