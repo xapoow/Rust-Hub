@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-      - codex/youtube-playlist-landing
+      - youtube-playlist-landing
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '*/30 * * * *'
 
 permissions:
   actions: read
