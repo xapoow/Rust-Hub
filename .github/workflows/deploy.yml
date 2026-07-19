@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - codex/youtube-playlist-landing
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * *'
