@@ -4,11 +4,34 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <meta
       name="description"
       content="Подборка YouTube-видео по Rust base design с удобной сеткой превью и встроенным просмотром."
     />
-    <title>Rust Bases</title>
+    <title>Base guides Rust</title>
+    <script>
+      ;(() => {
+        const key = 'rust-bases-theme'
+        let savedTheme = null
+
+        try {
+          savedTheme = window.localStorage.getItem(key)
+        } catch {
+          savedTheme = null
+        }
+
+        const theme =
+          savedTheme === 'light' || savedTheme === 'dark'
+            ? savedTheme
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+
+        document.documentElement.dataset.theme = theme
+        document.documentElement.style.colorScheme = theme
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

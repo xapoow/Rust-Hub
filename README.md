@@ -1,6 +1,7 @@
-# Rust Bases
+# Base guides Rust
 
 Static React landing for a YouTube playlist with Rust base design videos.
+The interface includes a persisted light/dark theme toggle.
 
 ## Commands
 

@@ -4,9 +4,11 @@
   --border: #dedbd4;
   --button: #ffffff;
   --muted: #686660;
+  --shadow: rgb(31 31 31 / 10%);
   --surface: #ffffff;
   --text: #20201d;
   --thumb: #2b2b28;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-family:
@@ -19,11 +21,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root[data-theme='dark'] {
+  --accent: #ff7f62;
+  --bg: #151513;
+  --border: #35342f;
+  --button: #22221f;
+  --muted: #aaa69c;
+  --shadow: rgb(0 0 0 / 34%);
+  --surface: #1d1d1a;
+  --text: #f4f0e8;
+  --thumb: #0f0f0e;
+  color-scheme: dark;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
+  background:
+    linear-gradient(180deg, rgb(195 66 47 / 7%), transparent 260px),
+    var(--bg);
   margin: 0;
   min-width: 320px;
   min-height: 100svh;
