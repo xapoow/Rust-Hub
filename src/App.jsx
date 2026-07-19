@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 const DATA_URL = `${import.meta.env.BASE_URL}data/playlist.json`
+const FETCH_INTERVAL_MS = 30 * 60 * 1000
 const SITE_TITLE = 'Base guides Rust'
 const THEME_STORAGE_KEY = 'rust-bases-theme'
 const PLAYLIST_URL =
@@ -40,6 +41,29 @@ function formatDate(value) {
     month: 'short',
     year: 'numeric',
   }).format(new Date(value))
+}
+
+function formatDateTime(value) {
+  if (!value) return ''
+
+  return new Intl.DateTimeFormat('ru-RU', {
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    month: 'short',
+  }).format(new Date(value))
+}
+
+function getNextFetchAt(now) {
+  return Math.ceil((now + 1) / FETCH_INTERVAL_MS) * FETCH_INTERVAL_MS
+}
+
+function formatCountdown(milliseconds) {
+  const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000))
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
 function App() {
@@ -184,6 +208,7 @@ function Header({ playlist, theme, onThemeToggle }) {
         <p className="subtitle">
           {playlist.videos.length} видео по Rust base design от {playlist.channel.name}
         </p>
+        <FetchCountdown syncedAt={playlist.syncedAt} />
       </div>
 
       <div className="header-actions">
@@ -193,6 +218,25 @@ function Header({ playlist, theme, onThemeToggle }) {
         </a>
       </div>
     </header>
+  )
+}
+
+function FetchCountdown({ syncedAt }) {
+  const [now, setNow] = useState(() => Date.now())
+  const nextFetchAt = getNextFetchAt(now)
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => setNow(Date.now()), 1000)
+
+    return () => window.clearInterval(intervalId)
+  }, [])
+
+  return (
+    <div className="fetch-countdown" aria-live="polite">
+      <span>Следующий fetch примерно через</span>
+      <strong>{formatCountdown(nextFetchAt - now)}</strong>
+      {syncedAt ? <span>Последний sync: {formatDateTime(syncedAt)}</span> : null}
+    </div>
   )
 }
 
