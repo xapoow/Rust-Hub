@@ -26,6 +26,10 @@
   max-width: 720px;
 }
 
+.page-header h1 {
+  margin-bottom: 12px;
+}
+
 .header-actions,
 .nav-actions {
   align-items: center;

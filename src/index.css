@@ -64,5 +64,5 @@ p {
 h1 {
   font-size: clamp(38px, 7vw, 72px);
   letter-spacing: 0;
-  line-height: 0.98;
+  line-height: 1.08;
 }
