@@ -1,13 +1,16 @@
 :root {
-  --accent: #c3422f;
-  --bg: #f7f7f4;
-  --border: #dedbd4;
-  --button: #ffffff;
-  --muted: #686660;
-  --shadow: rgb(31 31 31 / 10%);
-  --surface: #ffffff;
-  --text: #20201d;
-  --thumb: #2b2b28;
+  --accent: #d65a31;
+  --accent-quiet: rgb(214 90 49 / 12%);
+  --bg: #e9e5dc;
+  --border: #6e685c;
+  --button: #f4f0e7;
+  --grid-line: rgb(32 32 29 / 7%);
+  --muted: #696357;
+  --shadow: rgb(41 34 25 / 18%);
+  --surface: #f8f5ed;
+  --surface-strong: #fffaf0;
+  --text: #24211b;
+  --thumb: #24211b;
   color-scheme: light;
   color: var(--text);
   background: var(--bg);
@@ -22,15 +25,18 @@
 }
 
 :root[data-theme='dark'] {
-  --accent: #ff7f62;
-  --bg: #151513;
-  --border: #35342f;
-  --button: #22221f;
-  --muted: #aaa69c;
-  --shadow: rgb(0 0 0 / 34%);
-  --surface: #1d1d1a;
-  --text: #f4f0e8;
-  --thumb: #0f0f0e;
+  --accent: #f17b45;
+  --accent-quiet: rgb(241 123 69 / 14%);
+  --bg: #10100e;
+  --border: #4e4a41;
+  --button: #1a1a17;
+  --grid-line: rgb(244 240 232 / 6%);
+  --muted: #a49d8d;
+  --shadow: rgb(0 0 0 / 38%);
+  --surface: #181814;
+  --surface-strong: #202019;
+  --text: #f2eadc;
+  --thumb: #090908;
   color-scheme: dark;
 }
 
@@ -40,8 +46,14 @@
 
 body {
   background:
-    linear-gradient(180deg, rgb(195 66 47 / 7%), transparent 260px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(180deg, var(--grid-line) 1px, transparent 1px),
+    radial-gradient(circle at 12% 0%, var(--accent-quiet), transparent 320px),
     var(--bg);
+  background-size:
+    38px 38px,
+    38px 38px,
+    auto;
   margin: 0;
   min-width: 320px;
   min-height: 100svh;
