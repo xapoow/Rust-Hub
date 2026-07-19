@@ -1,0 +1,37 @@
+{
+  "id": "PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd",
+  "title": "хаты",
+  "channel": {
+    "id": "UCAYLqpe06kwvAJVtTaNWpng",
+    "name": "xapow",
+    "url": "https://www.youtube.com/channel/UCAYLqpe06kwvAJVtTaNWpng"
+  },
+  "syncedAt": "2026-07-19T15:38:24.908Z",
+  "sourceUrl": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd",
+  "videos": [
+    {
+      "id": "fbErKBY5BCg",
+      "title": "TERROR - META 2x2 OPENCORE Base Design - Идеальный Дом Для Сноубола.",
+      "author": "jersy",
+      "publishedAt": "2024-12-20T12:37:24+00:00",
+      "thumbnailUrl": "https://i3.ytimg.com/vi/fbErKBY5BCg/hqdefault.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=fbErKBY5BCg&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd"
+    },
+    {
+      "id": "k3VF_AfOZ0k",
+      "title": "(NEW) Perfect 2x2 for DUO / Rust Base Design 2025",
+      "author": "Builder",
+      "publishedAt": "2025-01-04T18:35:47+00:00",
+      "thumbnailUrl": "https://i4.ytimg.com/vi/k3VF_AfOZ0k/hqdefault.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=k3VF_AfOZ0k&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd"
+    },
+    {
+      "id": "OMFuf1HsEb0",
+      "title": "The Mountain 3x3 / Опенкор / Китайка / Удобная Стартерка",
+      "author": "skyrocketed",
+      "publishedAt": "2025-12-21T09:51:31+00:00",
+      "thumbnailUrl": "https://i4.ytimg.com/vi/OMFuf1HsEb0/hqdefault.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=OMFuf1HsEb0&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd"
+    }
+  ]
+}
