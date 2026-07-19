@@ -1,16 +1,34 @@
-# React + Vite
+# Rust Bases
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Static React landing for a YouTube playlist with Rust base design videos.
 
-Currently, two official plugins are available:
+## Commands
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run sync:playlist
+npm run dev
+npm run build
+npm run preview
+```
 
-## React Compiler
+## Playlist Data
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The playlist data is generated from the public YouTube XML feed:
 
-## Expanding the Oxlint configuration
+```text
+https://www.youtube.com/feeds/videos.xml?playlist_id=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+`npm run sync:playlist` writes the normalized result to
+`public/data/playlist.json`. GitHub Actions runs the same sync before building
+and also runs daily so the deployed site can pick up playlist changes.
+
+Private playlists are not supported by this no-backend setup. The playlist must
+be public or unlisted with a feed that is accessible without authentication, and
+individual videos must allow iframe embedding.
+
+## Deployment
+
+GitHub Pages deployment is handled by `.github/workflows/deploy.yml`. In the
+repository settings, set Pages source to GitHub Actions.
