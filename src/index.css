@@ -78,3 +78,18 @@ h1 {
   letter-spacing: 0;
   line-height: 1.08;
 }
+
+@media (max-width: 640px) {
+  body {
+    background-size:
+      28px 28px,
+      28px 28px,
+      auto;
+  }
+
+  h1 {
+    font-size: clamp(34px, 13vw, 52px);
+    line-height: 1.02;
+    overflow-wrap: anywhere;
+  }
+}
