@@ -1,12 +1,18 @@
 {
   "id": "PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd",
-  "title": "хаты",
+  "title": "Base guides Rust",
   "channel": {
     "id": "UCAYLqpe06kwvAJVtTaNWpng",
     "name": "xapow",
     "url": "https://www.youtube.com/channel/UCAYLqpe06kwvAJVtTaNWpng"
   },
-  "syncedAt": "2026-07-19T15:42:57.052Z",
+  "counts": {
+    "feed": 4,
+    "manual": 0,
+    "total": 4
+  },
+  "feedWarning": "YouTube XML feed can omit restricted, private, age-limited, made-for-kids, or unavailable videos.",
+  "syncedAt": "2026-07-20T12:47:34.717Z",
   "sourceUrl": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd",
   "videos": [
     {
@@ -15,7 +21,8 @@
       "author": "jersy",
       "publishedAt": "2024-12-20T12:37:24+00:00",
       "thumbnailUrl": "https://i3.ytimg.com/vi/fbErKBY5BCg/hqdefault.jpg",
-      "youtubeUrl": "https://www.youtube.com/watch?v=fbErKBY5BCg&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd"
+      "youtubeUrl": "https://www.youtube.com/watch?v=fbErKBY5BCg&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd",
+      "source": "feed"
     },
     {
       "id": "k3VF_AfOZ0k",
@@ -23,7 +30,8 @@
       "author": "Builder",
       "publishedAt": "2025-01-04T18:35:47+00:00",
       "thumbnailUrl": "https://i4.ytimg.com/vi/k3VF_AfOZ0k/hqdefault.jpg",
-      "youtubeUrl": "https://www.youtube.com/watch?v=k3VF_AfOZ0k&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd"
+      "youtubeUrl": "https://www.youtube.com/watch?v=k3VF_AfOZ0k&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd",
+      "source": "feed"
     },
     {
       "id": "OMFuf1HsEb0",
@@ -31,7 +39,17 @@
       "author": "skyrocketed",
       "publishedAt": "2025-12-21T09:51:31+00:00",
       "thumbnailUrl": "https://i4.ytimg.com/vi/OMFuf1HsEb0/hqdefault.jpg",
-      "youtubeUrl": "https://www.youtube.com/watch?v=OMFuf1HsEb0&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd"
+      "youtubeUrl": "https://www.youtube.com/watch?v=OMFuf1HsEb0&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd",
+      "source": "feed"
+    },
+    {
+      "id": "lu6nRk9Q2mc",
+      "title": "Mini Design Solo/Duo – Cheap Bunker Base Rust 2026",
+      "author": "RustLogic",
+      "publishedAt": "2026-07-19T13:58:19+00:00",
+      "thumbnailUrl": "https://i1.ytimg.com/vi/lu6nRk9Q2mc/hqdefault.jpg",
+      "youtubeUrl": "https://www.youtube.com/watch?v=lu6nRk9Q2mc&list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd",
+      "source": "feed"
     }
   ]
 }

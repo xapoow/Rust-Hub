@@ -62,6 +62,43 @@
   padding: 18px;
 }
 
+.feed-status {
+  background: color-mix(in srgb, var(--button) 88%, transparent);
+  border: 1px dashed var(--border);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  margin: -10px 0 24px;
+  padding: 14px;
+}
+
+.feed-status div {
+  display: grid;
+  gap: 3px;
+}
+
+.feed-status span,
+.feed-status p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.feed-status strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.feed-status p {
+  border-top: 1px solid var(--border);
+  grid-column: 1 / -1;
+  padding-top: 10px;
+}
+
+.feed-status a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .control-row {
   display: grid;
   gap: 12px;
@@ -153,6 +190,7 @@
 
 .playlist-link,
 .top-nav a,
+.copy-button,
 .theme-toggle {
   align-items: center;
   background: var(--button);
@@ -172,6 +210,7 @@
 
 .playlist-link:hover,
 .top-nav a:hover,
+.copy-button:hover,
 .theme-toggle:hover {
   border-color: var(--accent);
   transform: translate(-2px, -2px);
@@ -337,6 +376,18 @@
   padding: 0 12px;
 }
 
+.copy-button {
+  background: var(--button);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 34px;
+  padding: 0 12px;
+}
+
 .favorite-button.active {
   background: var(--text);
   border-color: var(--accent);
@@ -443,6 +494,7 @@
 
   .playlist-link,
   .top-nav a,
+  .copy-button,
   .theme-toggle {
     justify-content: center;
   }
@@ -456,6 +508,10 @@
     flex-direction: column;
   }
 
+  .feed-status {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .watch-layout {
     grid-template-columns: 1fr;
   }
@@ -467,5 +523,11 @@
 
   .watch-details h1 {
     font-size: 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .feed-status {
+    grid-template-columns: 1fr;
   }
 }

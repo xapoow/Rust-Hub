@@ -114,6 +114,27 @@ function sortVideos(videos, sortMode) {
   })
 }
 
+function getShareUrl(videoId) {
+  return `${window.location.origin}${window.location.pathname}#/video/${encodeURIComponent(videoId)}`
+}
+
+async function copyText(value) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value)
+    return
+  }
+
+  const input = document.createElement('textarea')
+  input.value = value
+  input.setAttribute('readonly', '')
+  input.style.position = 'fixed'
+  input.style.opacity = '0'
+  document.body.append(input)
+  input.select()
+  document.execCommand('copy')
+  input.remove()
+}
+
 function App() {
   const [route, setRoute] = useState(getRoute)
   const [theme, setTheme] = useState(getInitialTheme)
@@ -144,7 +165,7 @@ function App() {
 
     async function loadPlaylist() {
       try {
-        const response = await fetch(DATA_URL)
+        const response = await fetch(`${DATA_URL}?v=${Date.now()}`, { cache: 'no-store' })
 
         if (!response.ok) {
           throw new Error(`Playlist request failed: ${response.status}`)
@@ -286,6 +307,7 @@ function HomePage({ playlist, theme, onThemeToggle }) {
   return (
     <main className="shell">
       <Header playlist={playlist} theme={theme} onThemeToggle={onThemeToggle} />
+      <FeedStatus playlist={playlist} />
 
       <PlaylistControls
         activeTag={activeTag}
@@ -315,6 +337,37 @@ function HomePage({ playlist, theme, onThemeToggle }) {
         <div className="empty-results">No videos match the current search and filters.</div>
       ) : null}
     </main>
+  )
+}
+
+function FeedStatus({ playlist }) {
+  const feedCount = playlist.counts?.feed ?? playlist.videos.length
+  const manualCount = playlist.counts?.manual ?? 0
+  const totalCount = playlist.counts?.total ?? playlist.videos.length
+
+  return (
+    <section className="feed-status" aria-label="Feed status">
+      <div>
+        <span>Last sync</span>
+        <strong>{formatDateTime(playlist.syncedAt)}</strong>
+      </div>
+      <div>
+        <span>Videos in feed</span>
+        <strong>{feedCount}</strong>
+      </div>
+      <div>
+        <span>Manual fallback</span>
+        <strong>{manualCount}</strong>
+      </div>
+      <div>
+        <span>Total shown</span>
+        <strong>{totalCount}</strong>
+      </div>
+      <p>
+        Source: <a href={playlist.sourceUrl} target="_blank" rel="noreferrer">YouTube XML feed</a>.
+        YouTube can omit restricted, private, age-limited, made-for-kids, or unavailable videos.
+      </p>
+    </section>
   )
 }
 
@@ -448,6 +501,14 @@ function ThemeToggle({ theme, onToggle }) {
 }
 
 function VideoCard({ favorite, onFavoriteToggle, video }) {
+  const [copied, setCopied] = useState(false)
+
+  const copyVideoLink = async () => {
+    await copyText(getShareUrl(video.id))
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1400)
+  }
+
   return (
     <article className="video-card">
       <a className="video-card-link" href={`#/video/${encodeURIComponent(video.id)}`}>
@@ -481,12 +542,17 @@ function VideoCard({ favorite, onFavoriteToggle, video }) {
         >
           {favorite ? 'Saved' : 'Save'}
         </button>
+        <button className="copy-button" onClick={copyVideoLink} type="button">
+          {copied ? 'Copied' : 'Copy link'}
+        </button>
       </div>
     </article>
   )
 }
 
 function VideoPage({ selectedVideo, requestedVideoId, theme, onThemeToggle }) {
+  const [copied, setCopied] = useState(false)
+
   if (!selectedVideo) {
     return (
       <main className="shell status-shell">
@@ -501,12 +567,21 @@ function VideoPage({ selectedVideo, requestedVideoId, theme, onThemeToggle }) {
     )
   }
 
+  const copyCurrentVideoLink = async () => {
+    await copyText(getShareUrl(selectedVideo.id))
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1400)
+  }
+
   return (
     <main className="shell">
       <nav className="top-nav" aria-label="Navigation">
         <a href="#/">Back to videos</a>
         <div className="nav-actions">
           <ThemeToggle theme={theme} onToggle={onThemeToggle} />
+          <button className="copy-button" onClick={copyCurrentVideoLink} type="button">
+            {copied ? 'Copied' : 'Copy link'}
+          </button>
           <a href={selectedVideo.youtubeUrl} target="_blank" rel="noreferrer">
             Watch on YouTube
           </a>
