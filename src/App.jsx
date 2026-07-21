@@ -11,14 +11,14 @@ const PLAYLIST_URL =
   'https://www.youtube.com/playlist?list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd'
 
 const TAG_RULES = [
-  ['solo', /\bsolo\b/i],
-  ['duo', /\bduo\b/i],
+  ['соло', /\bsolo\b/i],
+  ['дуо', /\bduo\b/i],
   ['2x2', /\b2\s*x\s*2\b/i],
   ['3x3', /\b3\s*x\s*3\b/i],
-  ['starter', /starter|старт/i],
-  ['bunker', /bunker|бункер/i],
-  ['opencore', /opencore|опенкор/i],
-  ['cheap', /cheap|деш/i],
+  ['стартерка', /starter|старт/i],
+  ['бункер', /bunker|бункер/i],
+  ['опенкор', /opencore|опенкор/i],
+  ['бюджетно', /cheap|деш/i],
   ['2025', /\b2025\b/],
   ['2026', /\b2026\b/],
 ]
@@ -190,11 +190,11 @@ function App() {
         ])
 
         if (!playlistResponse.ok) {
-          throw new Error(`Playlist request failed: ${playlistResponse.status}`)
+          throw new Error(`Ошибка загрузки плейлиста: ${playlistResponse.status}`)
         }
 
         if (!monumentsResponse.ok) {
-          throw new Error(`Monuments request failed: ${monumentsResponse.status}`)
+          throw new Error(`Ошибка загрузки РТ: ${monumentsResponse.status}`)
         }
 
         const [playlist, monuments] = await Promise.all([
@@ -208,7 +208,7 @@ function App() {
         }
       } catch (loadError) {
         if (!ignore) {
-          setError(loadError instanceof Error ? loadError.message : 'Unknown hub data error')
+          setError(loadError instanceof Error ? loadError.message : 'Неизвестная ошибка загрузки данных')
           setStatus('error')
         }
       }
@@ -236,14 +236,14 @@ function App() {
   }
 
   if (status === 'loading') {
-    return <StatusView title="Loading Rust Hub" theme={theme} onThemeToggle={toggleTheme} />
+    return <StatusView title="Загружаем Rust Hub" theme={theme} onThemeToggle={toggleTheme} />
   }
 
   if (status === 'error') {
     return (
       <StatusView
-        title="Rust Hub failed to load"
-        detail={error || 'Check that data files are available after build.'}
+        title="Rust Hub не загрузился"
+        detail={error || 'Проверьте, что data-файлы доступны после сборки.'}
         theme={theme}
         onThemeToggle={toggleTheme}
       />
@@ -253,8 +253,8 @@ function App() {
   if (!hubData?.playlist?.videos?.length) {
     return (
       <StatusView
-        title="No videos in playlist"
-        detail="Run playlist sync after updating the YouTube playlist."
+        title="В плейлисте нет видео"
+        detail="Запустите синхронизацию после обновления YouTube-плейлиста."
         theme={theme}
         onThemeToggle={toggleTheme}
       />
@@ -345,10 +345,10 @@ function Header({ activeView, monumentsData, playlist, setActiveView, theme, onT
   return (
     <header className="page-header">
       <div>
-        <p className="eyebrow">Rust knowledge hub</p>
+        <p className="eyebrow">Хаб по Rust</p>
         <h1>{SITE_TITLE}</h1>
         <p className="subtitle">
-          Simple hub for base guides, monument notes, and quick Rust reference.
+          Простой хаб с видео по базам, заметками по РТ и быстрыми справками.
         </p>
         <FetchCountdown syncedAt={playlist.syncedAt} />
       </div>
@@ -360,19 +360,19 @@ function Header({ activeView, monumentsData, playlist, setActiveView, theme, onT
             onClick={() => goToView('videos')}
             type="button"
           >
-            Videos {playlist.videos.length}
+            Видео {playlist.videos.length}
           </button>
           <button
             className={activeView === 'monuments' ? 'active' : ''}
             onClick={() => goToView('monuments')}
             type="button"
           >
-            Monuments {monumentsData.monuments.length}
+            РТ {monumentsData.monuments.length}
           </button>
         </div>
         <ThemeToggle theme={theme} onToggle={onThemeToggle} />
         <a className="playlist-link" href={PLAYLIST_URL} target="_blank" rel="noreferrer">
-          Open YouTube
+          Открыть YouTube
         </a>
       </div>
     </header>
@@ -446,7 +446,7 @@ function VideosHub({ playlist }) {
         totalCount={playlist.videos.length}
       />
 
-      <section className="video-grid" aria-label="Playlist videos">
+      <section className="video-grid" aria-label="Видео плейлиста">
         {visibleVideos.map((video) => (
           <VideoCard
             favorite={favoriteIds.has(video.id)}
@@ -458,7 +458,7 @@ function VideosHub({ playlist }) {
       </section>
 
       {!visibleVideos.length ? (
-        <div className="empty-results">No videos match the current search and filters.</div>
+        <div className="empty-results">Под текущий поиск и фильтры видео не найдены.</div>
       ) : null}
     </>
   )
@@ -480,29 +480,29 @@ function MonumentsHub({ monumentsData }) {
 
   return (
     <>
-      <section className="playlist-controls monument-controls" aria-label="Monument search">
+      <section className="playlist-controls monument-controls" aria-label="Поиск по РТ">
         <label className="search-box">
-          <span>Search monuments</span>
+          <span>Поиск по РТ</span>
           <input
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Launch Site, Airfield, Dome..."
+            placeholder="Космодром, Аэродром, Купол..."
             type="search"
             value={query}
           />
         </label>
         <p className="result-count">
-          Showing {visibleMonuments.length} of {monumentsData.monuments.length}
+          Показано {visibleMonuments.length} из {monumentsData.monuments.length}
         </p>
       </section>
 
-      <section className="monument-grid" aria-label="Rust monuments">
+      <section className="monument-grid" aria-label="РТ Rust">
         {visibleMonuments.map((monument) => (
           <MonumentCard key={monument.id} monument={monument} />
         ))}
       </section>
 
       {!visibleMonuments.length ? (
-        <div className="empty-results">No monuments match the current search.</div>
+        <div className="empty-results">Под текущий поиск РТ не найдены.</div>
       ) : null}
     </>
   )
@@ -511,12 +511,15 @@ function MonumentsHub({ monumentsData }) {
 function MonumentCard({ monument }) {
   return (
     <a className="monument-card" href={`#/monuments/${encodeURIComponent(monument.id)}`}>
+      <span className="monument-thumb">
+        <img src={monument.imageUrl} alt="" loading="lazy" />
+      </span>
       <span className="monument-tier">{monument.tier}</span>
       <strong>{monument.name}</strong>
       <span>{monument.summary}</span>
       <span className="monument-facts">
-        Radiation: {monument.radiation} · Cards: {monument.cards.length ? monument.cards.join(', ') : 'None'} · Fuse:{' '}
-        {monument.requiresFuse ? 'Yes' : 'No'}
+        Радиация: {monument.radiation} · Карты: {monument.cards.length ? monument.cards.join(', ') : 'Нет'} · Фьюз:{' '}
+        {monument.requiresFuse ? 'Нужен' : 'Не нужен'}
       </span>
     </a>
   )
@@ -529,10 +532,10 @@ function MonumentPage({ monument, requestedMonumentId, theme, onThemeToggle }) {
     return (
       <main className="shell status-shell">
         <section className="status-panel">
-          <p className="eyebrow">Monument not found</p>
+          <p className="eyebrow">РТ не найдена</p>
           <h1>{requestedMonumentId}</h1>
           <a className="playlist-link" href="#/monuments">
-            Back to monuments
+            Назад к РТ
           </a>
         </section>
       </main>
@@ -547,30 +550,33 @@ function MonumentPage({ monument, requestedMonumentId, theme, onThemeToggle }) {
 
   return (
     <main className="shell">
-      <nav className="top-nav" aria-label="Navigation">
-        <a href="#/monuments">Back to monuments</a>
+      <nav className="top-nav" aria-label="Навигация">
+        <a href="#/monuments">Назад к РТ</a>
         <div className="nav-actions">
           <ThemeToggle theme={theme} onToggle={onThemeToggle} />
           <button className="copy-button" onClick={copyMonumentLink} type="button">
-            {copied ? 'Copied' : 'Copy link'}
+            {copied ? 'Скопировано' : 'Скопировать ссылку'}
           </button>
         </div>
       </nav>
 
       <section className="monument-detail">
+        <div className="monument-hero-image">
+          <img src={monument.imageUrl} alt="" />
+        </div>
         <p className="eyebrow">{monument.tier}</p>
         <h1>{monument.name}</h1>
         <p>{monument.summary}</p>
 
         <div className="monument-stat-grid">
-          <InfoStat label="Radiation" value={monument.radiation} />
-          <InfoStat label="Cards" value={monument.cards.length ? monument.cards.join(', ') : 'None'} />
-          <InfoStat label="Fuse" value={monument.requiresFuse ? 'Required' : 'Not required'} />
-          <InfoStat label="Recycler" value={monument.hasRecycler ? 'Available' : 'No recycler'} />
+          <InfoStat label="Радиация" value={monument.radiation} />
+          <InfoStat label="Карты" value={monument.cards.length ? monument.cards.join(', ') : 'Нет'} />
+          <InfoStat label="Фьюз" value={monument.requiresFuse ? 'Нужен' : 'Не нужен'} />
+          <InfoStat label="Переработчик" value={monument.hasRecycler ? 'Есть' : 'Нет'} />
         </div>
 
         <section className="tips-panel">
-          <h2>Quick notes</h2>
+          <h2>Короткие заметки</h2>
           <ul>
             {monument.tips.map((tip) => (
               <li key={tip}>{tip}</li>
@@ -599,24 +605,24 @@ function FeedStatus({ playlist }) {
   return (
     <section className="feed-status" aria-label="Feed status">
       <div>
-        <span>Last sync</span>
+        <span>Последний sync</span>
         <strong>{formatDateTime(playlist.syncedAt)}</strong>
       </div>
       <div>
-        <span>Videos in feed</span>
+        <span>Видео в feed</span>
         <strong>{feedCount}</strong>
       </div>
       <div>
-        <span>Manual fallback</span>
+        <span>Ручной fallback</span>
         <strong>{manualCount}</strong>
       </div>
       <div>
-        <span>Total shown</span>
+        <span>Всего на сайте</span>
         <strong>{totalCount}</strong>
       </div>
       <p>
-        Source: <a href={playlist.sourceUrl} target="_blank" rel="noreferrer">YouTube XML feed</a>.
-        YouTube can omit restricted, private, age-limited, made-for-kids, or unavailable videos.
+        Источник: <a href={playlist.sourceUrl} target="_blank" rel="noreferrer">YouTube XML feed</a>.
+        YouTube может не отдавать приватные, ограниченные по возрасту, детские или недоступные видео.
       </p>
     </section>
   )
@@ -635,38 +641,38 @@ function PlaylistControls({
   totalCount,
 }) {
   return (
-    <section className="playlist-controls" aria-label="Playlist controls">
+    <section className="playlist-controls" aria-label="Управление плейлистом">
       <div className="control-row">
         <label className="search-box">
-          <span>Search videos</span>
+          <span>Поиск видео</span>
           <input
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Title or author"
+            placeholder="Название или автор"
             type="search"
             value={query}
           />
         </label>
 
         <label className="sort-box">
-          <span>Sort</span>
+          <span>Сортировка</span>
           <select onChange={(event) => setSortMode(event.target.value)} value={sortMode}>
-            <option value="newest">Newest first</option>
-            <option value="oldest">Oldest first</option>
-            <option value="title">Title A-Z</option>
+            <option value="newest">Новые сначала</option>
+            <option value="oldest">Старые сначала</option>
+            <option value="title">По названию</option>
           </select>
         </label>
       </div>
 
-      <div className="tag-list" aria-label="Tags">
+      <div className="tag-list" aria-label="Теги">
         <FilterButton active={activeTag === 'all'} onClick={() => setActiveTag('all')}>
-          All
+          Все
         </FilterButton>
         <FilterButton
           active={activeTag === 'favorites'}
           disabled={favoriteCount === 0}
           onClick={() => setActiveTag('favorites')}
         >
-          Favorites {favoriteCount}
+          Избранное {favoriteCount}
         </FilterButton>
         {availableTags.map((tag) => (
           <FilterButton active={activeTag === tag} key={tag} onClick={() => setActiveTag(tag)}>
@@ -676,7 +682,7 @@ function PlaylistControls({
       </div>
 
       <p className="result-count">
-        Showing {resultCount} of {totalCount}
+        Показано {resultCount} из {totalCount}
       </p>
     </section>
   )
@@ -707,9 +713,9 @@ function FetchCountdown({ syncedAt }) {
 
   return (
     <div className="fetch-countdown" aria-live="polite">
-      <span>Next video fetch in about</span>
+      <span>Следующий fetch видео примерно через</span>
       <strong>{formatCountdown(nextFetchAt - now)}</strong>
-      {syncedAt ? <span>Last sync: {formatDateTime(syncedAt)}</span> : null}
+      {syncedAt ? <span>Последний sync: {formatDateTime(syncedAt)}</span> : null}
     </div>
   )
 }
@@ -719,12 +725,12 @@ function ThemeToggle({ theme, onToggle }) {
     <button
       className="theme-toggle"
       type="button"
-      aria-label="Switch color theme"
+      aria-label="Переключить тему"
       aria-pressed={theme === 'dark'}
       onClick={onToggle}
     >
-      <span className={theme === 'light' ? 'active' : ''}>Light</span>
-      <span className={theme === 'dark' ? 'active' : ''}>Dark</span>
+      <span className={theme === 'light' ? 'active' : ''}>Светлая</span>
+      <span className={theme === 'dark' ? 'active' : ''}>Темная</span>
     </button>
   )
 }
@@ -744,7 +750,7 @@ function VideoCard({ favorite, onFavoriteToggle, video }) {
         <span className="thumb-wrap">
           <img src={video.thumbnailUrl} alt="" loading="lazy" />
           <span className="play-badge" aria-hidden="true">
-            Play
+            Смотреть
           </span>
         </span>
         <span className="video-meta">
@@ -757,22 +763,22 @@ function VideoCard({ favorite, onFavoriteToggle, video }) {
       </a>
 
       <div className="card-actions">
-        <div className="card-tags" aria-label="Video tags">
+        <div className="card-tags" aria-label="Теги видео">
           {video.tags.length
             ? video.tags.map((tag) => <span key={tag}>{tag}</span>)
-            : <span>untagged</span>}
+            : <span>без тегов</span>}
         </div>
         <button
           className={favorite ? 'favorite-button active' : 'favorite-button'}
           onClick={() => onFavoriteToggle(video.id)}
           type="button"
           aria-pressed={favorite}
-          aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
+          aria-label={favorite ? 'Убрать из избранного' : 'Добавить в избранное'}
         >
-          {favorite ? 'Saved' : 'Save'}
+          {favorite ? 'В избранном' : 'В избранное'}
         </button>
         <button className="copy-button" onClick={copyVideoLink} type="button">
-          {copied ? 'Copied' : 'Copy link'}
+          {copied ? 'Скопировано' : 'Скопировать'}
         </button>
       </div>
     </article>
@@ -786,10 +792,10 @@ function VideoPage({ selectedVideo, requestedVideoId, theme, onThemeToggle }) {
     return (
       <main className="shell status-shell">
         <section className="status-panel">
-          <p className="eyebrow">Video not found</p>
+          <p className="eyebrow">Видео не найдено</p>
           <h1>{requestedVideoId}</h1>
           <a className="playlist-link" href="#/videos">
-            Back to videos
+            Назад к видео
           </a>
         </section>
       </main>
@@ -804,15 +810,15 @@ function VideoPage({ selectedVideo, requestedVideoId, theme, onThemeToggle }) {
 
   return (
     <main className="shell">
-      <nav className="top-nav" aria-label="Navigation">
-        <a href="#/videos">Back to videos</a>
+      <nav className="top-nav" aria-label="Навигация">
+        <a href="#/videos">Назад к видео</a>
         <div className="nav-actions">
           <ThemeToggle theme={theme} onToggle={onThemeToggle} />
           <button className="copy-button" onClick={copyCurrentVideoLink} type="button">
-            {copied ? 'Copied' : 'Copy link'}
+            {copied ? 'Скопировано' : 'Скопировать ссылку'}
           </button>
           <a href={selectedVideo.youtubeUrl} target="_blank" rel="noreferrer">
-            Watch on YouTube
+            Смотреть на YouTube
           </a>
         </div>
       </nav>

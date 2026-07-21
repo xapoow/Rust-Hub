@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Train Yard preview">
+  <rect width="640" height="360" fill="#141411"/>
+  <path d="M0 286h640v74H0z" fill="#25231d"/>
+  <path d="M56 300h528" stroke="#6e685c" stroke-width="9"/>
+  <path d="M92 236h176v48H92zM316 214h210v70H316z" fill="#4d4b42"/>
+  <path d="M116 206h118v30H116zM348 178h146v36H348z" fill="#747064"/>
+  <path d="M88 286h190M314 286h226" stroke="#d65a31" stroke-width="8"/>
+  <circle cx="130" cy="288" r="16" fill="#1a1a17"/><circle cx="230" cy="288" r="16" fill="#1a1a17"/>
+  <circle cx="360" cy="288" r="16" fill="#1a1a17"/><circle cx="488" cy="288" r="16" fill="#1a1a17"/>
+  <text x="38" y="58" fill="#f2eadc" font-family="Arial, sans-serif" font-size="30" font-weight="700">ЖД ДЕПО</text>
+  <text x="38" y="330" fill="#a49d8d" font-family="Arial, sans-serif" font-size="18">карты / фьюз / вертикальные углы</text>
+</svg>

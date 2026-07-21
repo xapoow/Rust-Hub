@@ -1,17 +1,17 @@
 # Rust Hub
 
-Static React hub for Rust base guide videos and lightweight monument notes.
+Статический React-хаб по Rust: видео по базам, короткие заметки по РТ и быстрые справочные карточки.
 
-## Features
+## Возможности
 
-- YouTube playlist sync through the public XML feed.
-- Video search, sorting, inferred tags, favorites, and copy-link actions.
-- Monument hub with simple cards, detail pages, and name search.
-- Persisted light/dark theme.
-- Countdown to the next scheduled video sync window.
-- Manual fallback videos through `public/data/extra-videos.json`.
+- Синхронизация YouTube-плейлиста через публичный XML feed.
+- Поиск видео, сортировка, теги, избранное и копирование ссылок.
+- Раздел РТ с карточками, страницами деталей, поиском по названию и локальными превью.
+- Сохраняемая светлая/темная тема.
+- Счетчик до следующего запланированного обновления видео.
+- Ручной fallback для видео через `public/data/extra-videos.json`.
 
-## Commands
+## Команды
 
 ```bash
 npm install
@@ -21,21 +21,21 @@ npm run build
 npm run preview
 ```
 
-## Data
+## Данные
 
-Playlist data is generated from:
+Данные плейлиста генерируются из:
 
 ```text
 https://www.youtube.com/feeds/videos.xml?playlist_id=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd
 ```
 
-`npm run sync:playlist` writes `public/data/playlist.json`. Monument notes live in
-`public/data/monuments.json`.
+`npm run sync:playlist` записывает `public/data/playlist.json`. Заметки по РТ лежат в
+`public/data/monuments.json`, а превью РТ лежат в `public/images/monuments/`.
 
-GitHub Actions runs playlist sync before building and on a 30-minute schedule.
-Private playlists are not supported by this no-backend setup.
+GitHub Actions запускает sync перед сборкой и по расписанию раз в 30 минут.
+Приватные плейлисты в этой no-backend схеме не поддерживаются.
 
-## Deployment
+## Деплой
 
-GitHub Pages deployment is handled by `.github/workflows/deploy.yml`. In the
-repository settings, set Pages source to GitHub Actions.
+Деплой на GitHub Pages описан в `.github/workflows/deploy.yml`. В настройках
+репозитория Pages должен использовать источник GitHub Actions.

@@ -4,91 +4,103 @@
   "monuments": [
     {
       "id": "launch-site",
-      "name": "Launch Site",
-      "tier": "High tier",
-      "radiation": "High",
-      "cards": ["Green", "Red"],
+      "name": "Космодром",
+      "englishName": "Launch Site",
+      "tier": "Высокий тир",
+      "radiation": "Высокая",
+      "cards": ["Зеленая", "Красная"],
       "requiresFuse": true,
       "hasRecycler": true,
-      "summary": "Large high-risk monument with strong loot, heavy radiation, and frequent PvP.",
+      "imageUrl": "./images/monuments/launch-site.svg",
+      "summary": "Большая и опасная РТ с сильным лутом, высокой радиацией и частым PvP.",
       "tips": [
-        "Bring strong radiation protection and enough meds.",
-        "Expect counters near main loot routes and recycler paths."
+        "Бери хорошую защиту от радиации и запас аптечек.",
+        "Чаще всего контрят основные маршруты лута и зоны около переработчика."
       ],
       "relatedVideos": []
     },
     {
       "id": "airfield",
-      "name": "Airfield",
-      "tier": "Mid tier",
-      "radiation": "Medium",
-      "cards": ["Green", "Blue"],
+      "name": "Аэродром",
+      "englishName": "Airfield",
+      "tier": "Средний тир",
+      "radiation": "Средняя",
+      "cards": ["Зеленая", "Синяя"],
       "requiresFuse": true,
       "hasRecycler": true,
-      "summary": "Open monument with underground card puzzle, recycler access, and wide PvP sightlines.",
+      "imageUrl": "./images/monuments/airfield.svg",
+      "summary": "Открытая РТ с подземной головоломкой, переработчиком и длинными PvP-прострелами.",
       "tips": [
-        "Move carefully between hangars because sightlines are long.",
-        "Check recycler area before committing to loot."
+        "Осторожно перемещайся между ангарами: там много дальних углов.",
+        "Перед переработкой проверь зону вокруг переработчика."
       ],
       "relatedVideos": []
     },
     {
       "id": "water-treatment-plant",
-      "name": "Water Treatment Plant",
-      "tier": "Mid tier",
-      "radiation": "Low",
-      "cards": ["Blue"],
+      "name": "Водокачка",
+      "englishName": "Water Treatment Plant",
+      "tier": "Средний тир",
+      "radiation": "Низкая",
+      "cards": ["Синяя"],
       "requiresFuse": true,
       "hasRecycler": true,
-      "summary": "Reliable mid-game monument with recycler, puzzle loot, and many approach angles.",
+      "imageUrl": "./images/monuments/water-treatment-plant.svg",
+      "summary": "Стабильная РТ для мидгейма с переработчиком, головоломкой и большим числом подходов.",
       "tips": [
-        "Use elevation and rooftops to scout before looting.",
-        "The monument has many third-party angles, so avoid tunnel vision."
+        "Перед лутом используй высоту и крыши, чтобы проверить движение.",
+        "На РТ много углов для третьей стороны, не залипай в одном направлении."
       ],
       "relatedVideos": []
     },
     {
       "id": "satellite-dish",
-      "name": "Satellite Dish",
-      "tier": "Low tier",
-      "radiation": "Low",
-      "cards": ["Green"],
+      "name": "Спутниковые тарелки",
+      "englishName": "Satellite Dish",
+      "tier": "Низкий тир",
+      "radiation": "Низкая",
+      "cards": ["Зеленая"],
       "requiresFuse": false,
       "hasRecycler": true,
-      "summary": "Simple early monument with recycler, green-card puzzle value, and modest contest risk.",
+      "imageUrl": "./images/monuments/satellite-dish.svg",
+      "summary": "Простая ранняя РТ с переработчиком, зеленой картой и умеренным риском.",
       "tips": [
-        "Good early stop for components and a recycler run.",
-        "Dish structures give quick cover but limited escape routes."
+        "Хорошая точка для ранних компонентов и быстрой переработки.",
+        "Конструкции тарелок дают укрытия, но путей отхода не так много."
       ],
       "relatedVideos": []
     },
     {
       "id": "train-yard",
-      "name": "Train Yard",
-      "tier": "Mid tier",
-      "radiation": "Medium",
-      "cards": ["Green", "Blue", "Red"],
+      "name": "ЖД депо",
+      "englishName": "Train Yard",
+      "tier": "Средний тир",
+      "radiation": "Средняя",
+      "cards": ["Зеленая", "Синяя", "Красная"],
       "requiresFuse": true,
       "hasRecycler": true,
-      "summary": "Strong monument with card progression, recycler, and dangerous vertical angles.",
+      "imageUrl": "./images/monuments/train-yard.svg",
+      "summary": "Сильная РТ с прогрессией по картам, переработчиком и опасными вертикальными углами.",
       "tips": [
-        "Control rooflines before starting puzzle routes.",
-        "Train cars and buildings create many close-range ambush spots."
+        "Контроль крыш сильно снижает риск во время маршрута головоломки.",
+        "Вагоны и здания создают много мест для ближних засад."
       ],
       "relatedVideos": []
     },
     {
       "id": "dome",
-      "name": "Dome",
-      "tier": "Low tier",
-      "radiation": "Low",
+      "name": "Купол",
+      "englishName": "Dome",
+      "tier": "Низкий тир",
+      "radiation": "Низкая",
       "cards": [],
       "requiresFuse": false,
       "hasRecycler": false,
-      "summary": "Fast parkour monument with exposed climbing route and useful early loot.",
+      "imageUrl": "./images/monuments/dome.svg",
+      "summary": "Быстрая parkour-РТ с открытым подъемом и полезным ранним лутом.",
       "tips": [
-        "You are exposed while climbing, so scout before going up.",
-        "Falling is often more dangerous than the monument itself."
+        "Во время подъема тебя хорошо видно, поэтому сначала осмотрись.",
+        "Падение часто опаснее самой РТ."
       ],
       "relatedVideos": []
     }

@@ -291,6 +291,22 @@
     transform 160ms ease;
 }
 
+.monument-thumb {
+  aspect-ratio: 16 / 9;
+  background: var(--thumb);
+  border-bottom: 1px solid var(--border);
+  display: block;
+  margin: -18px -18px 4px;
+  overflow: hidden;
+}
+
+.monument-thumb img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
 .monument-card:hover {
   box-shadow: 8px 8px 0 var(--shadow);
   transform: translate(-2px, -2px);
@@ -303,6 +319,12 @@
 
 .monument-card > span:not(.monument-tier):not(.monument-facts) {
   color: var(--muted);
+}
+
+.monument-alt-name {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: -8px;
 }
 
 .monument-tier {
@@ -327,6 +349,21 @@
   display: grid;
   gap: 22px;
   padding: 26px;
+}
+
+.monument-hero-image {
+  aspect-ratio: 16 / 7;
+  background: var(--thumb);
+  border-bottom: 1px solid var(--border);
+  margin: -26px -26px 0;
+  overflow: hidden;
+}
+
+.monument-hero-image img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
 .monument-detail > p:not(.eyebrow) {
@@ -772,6 +809,11 @@
   .monument-detail {
     box-shadow: none;
     padding: 18px;
+  }
+
+  .monument-hero-image {
+    aspect-ratio: 16 / 9;
+    margin: -18px -18px 0;
   }
 
   .monument-stat-grid {

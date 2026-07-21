@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Airfield preview">
+  <rect width="640" height="360" fill="#151914"/>
+  <path d="M0 275h640v85H0z" fill="#2a2d24"/>
+  <path d="M50 286 590 214" stroke="#686357" stroke-width="34"/>
+  <path d="M90 210h190v70H90zM360 162h170v68H360z" fill="#4f5147"/>
+  <path d="M118 187h130l32 23H90zM392 140h112l26 22H360z" fill="#787466"/>
+  <path d="M288 244h48l-8 42h-32z" fill="#d65a31"/>
+  <text x="38" y="58" fill="#f2eadc" font-family="Arial, sans-serif" font-size="30" font-weight="700">АЭРОДРОМ</text>
+  <text x="38" y="330" fill="#a49d8d" font-family="Arial, sans-serif" font-size="18">головоломка / переработчик / PvP</text>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Satellite Dish preview">
+  <rect width="640" height="360" fill="#171510"/>
+  <path d="M0 284h640v76H0z" fill="#28241b"/>
+  <path d="M190 252h260v30H190z" fill="#50493b"/>
+  <path d="M292 132h56v152h-56z" fill="#676052"/>
+  <path d="M202 142c58-76 178-76 236 0-62 42-174 42-236 0z" fill="#898172"/>
+  <path d="M218 145c54 25 150 25 204 0" fill="none" stroke="#d65a31" stroke-width="9"/>
+  <text x="38" y="58" fill="#f2eadc" font-family="Arial, sans-serif" font-size="28" font-weight="700">СПУТНИКОВЫЕ ТАРЕЛКИ</text>
+  <text x="38" y="330" fill="#a49d8d" font-family="Arial, sans-serif" font-size="18">зеленая карта / ранняя переработка</text>
+</svg>
