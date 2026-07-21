@@ -5,6 +5,7 @@ const FAVORITES_STORAGE_KEY = 'rust-hub-favorites'
 const FETCH_INTERVAL_MS = 30 * 60 * 1000
 const MONUMENTS_URL = `${import.meta.env.BASE_URL}data/monuments.json`
 const PLAYLIST_DATA_URL = `${import.meta.env.BASE_URL}data/playlist.json`
+const RAID_DATA_URL = `${import.meta.env.BASE_URL}data/raid.json`
 const SITE_TITLE = 'Rust Hub'
 const THEME_STORAGE_KEY = 'rust-hub-theme'
 const PLAYLIST_URL =
@@ -70,6 +71,10 @@ function getRoute() {
 
   if (hash === '/monuments') {
     return { name: 'monuments' }
+  }
+
+  if (hash === '/raid-calculator') {
+    return { name: 'raid' }
   }
 
   return { name: 'home' }
@@ -184,9 +189,10 @@ function App() {
     async function loadHubData() {
       try {
         const cacheKey = Date.now()
-        const [playlistResponse, monumentsResponse] = await Promise.all([
+        const [playlistResponse, monumentsResponse, raidResponse] = await Promise.all([
           fetch(`${PLAYLIST_DATA_URL}?v=${cacheKey}`, { cache: 'no-store' }),
           fetch(`${MONUMENTS_URL}?v=${cacheKey}`, { cache: 'no-store' }),
+          fetch(`${RAID_DATA_URL}?v=${cacheKey}`, { cache: 'no-store' }),
         ])
 
         if (!playlistResponse.ok) {
@@ -197,13 +203,18 @@ function App() {
           throw new Error(`Ошибка загрузки РТ: ${monumentsResponse.status}`)
         }
 
-        const [playlist, monuments] = await Promise.all([
+        if (!raidResponse.ok) {
+          throw new Error(`Ошибка загрузки калькулятора рейда: ${raidResponse.status}`)
+        }
+
+        const [playlist, monuments, raid] = await Promise.all([
           playlistResponse.json(),
           monumentsResponse.json(),
+          raidResponse.json(),
         ])
 
         if (!ignore) {
-          setHubData({ monuments, playlist })
+          setHubData({ monuments, playlist, raid })
           setStatus('ready')
         }
       } catch (loadError) {
@@ -285,9 +296,10 @@ function App() {
 
   return (
     <HomePage
-      initialView={route.name === 'monuments' ? 'monuments' : 'videos'}
+      initialView={route.name === 'monuments' ? 'monuments' : route.name === 'raid' ? 'raid' : 'videos'}
       monumentsData={hubData.monuments}
       playlist={hubData.playlist}
+      raidData={hubData.raid}
       theme={theme}
       onThemeToggle={toggleTheme}
     />
@@ -307,14 +319,12 @@ function StatusView({ title, detail, theme, onThemeToggle }) {
   )
 }
 
-function HomePage({ initialView, monumentsData, playlist, theme, onThemeToggle }) {
+function HomePage({ initialView, monumentsData, playlist, raidData, theme, onThemeToggle }) {
   const [activeView, setActiveView] = useState(initialView)
 
   useEffect(() => {
     setActiveView(initialView)
   }, [initialView])
-
-  const showVideos = activeView === 'videos'
 
   return (
     <main className="shell">
@@ -322,23 +332,28 @@ function HomePage({ initialView, monumentsData, playlist, theme, onThemeToggle }
         activeView={activeView}
         monumentsData={monumentsData}
         playlist={playlist}
+        raidData={raidData}
         setActiveView={setActiveView}
         theme={theme}
         onThemeToggle={onThemeToggle}
       />
 
-      {showVideos ? (
-        <VideosHub playlist={playlist} />
-      ) : (
-        <MonumentsHub monumentsData={monumentsData} />
-      )}
+      {activeView === 'videos' ? <VideosHub playlist={playlist} /> : null}
+      {activeView === 'monuments' ? <MonumentsHub monumentsData={monumentsData} /> : null}
+      {activeView === 'raid' ? <RaidCalculator raidData={raidData} /> : null}
     </main>
   )
 }
 
-function Header({ activeView, monumentsData, playlist, setActiveView, theme, onThemeToggle }) {
+function Header({ activeView, monumentsData, playlist, raidData, setActiveView, theme, onThemeToggle }) {
   const goToView = (view) => {
-    window.location.hash = view === 'videos' ? '#/videos' : '#/monuments'
+    const routes = {
+      monuments: '#/monuments',
+      raid: '#/raid-calculator',
+      videos: '#/videos',
+    }
+
+    window.location.hash = routes[view]
     setActiveView(view)
   }
 
@@ -354,7 +369,7 @@ function Header({ activeView, monumentsData, playlist, setActiveView, theme, onT
       </div>
 
       <div className="header-actions">
-        <div className="view-tabs" aria-label="Hub sections">
+        <div className="view-tabs" aria-label="Разделы Rust Hub">
           <button
             className={activeView === 'videos' ? 'active' : ''}
             onClick={() => goToView('videos')}
@@ -368,6 +383,13 @@ function Header({ activeView, monumentsData, playlist, setActiveView, theme, onT
             type="button"
           >
             РТ {monumentsData.monuments.length}
+          </button>
+          <button
+            className={activeView === 'raid' ? 'active' : ''}
+            onClick={() => goToView('raid')}
+            type="button"
+          >
+            Рейд {raidData.targets.length}
           </button>
         </div>
         <ThemeToggle theme={theme} onToggle={onThemeToggle} />
@@ -511,9 +533,7 @@ function MonumentsHub({ monumentsData }) {
 function MonumentCard({ monument }) {
   return (
     <a className="monument-card" href={`#/monuments/${encodeURIComponent(monument.id)}`}>
-      <span className="monument-thumb">
-        <img src={monument.imageUrl} alt="" loading="lazy" />
-      </span>
+      <MediaSlot className="monument-thumb" label={monument.name} src={monument.imageUrl} />
       <span className="monument-tier">{monument.tier}</span>
       <strong>{monument.name}</strong>
       <span>{monument.summary}</span>
@@ -561,9 +581,7 @@ function MonumentPage({ monument, requestedMonumentId, theme, onThemeToggle }) {
       </nav>
 
       <section className="monument-detail">
-        <div className="monument-hero-image">
-          <img src={monument.imageUrl} alt="" />
-        </div>
+        <MediaSlot className="monument-hero-image" label={monument.name} src={monument.imageUrl} />
         <p className="eyebrow">{monument.tier}</p>
         <h1>{monument.name}</h1>
         <p>{monument.summary}</p>
@@ -585,6 +603,155 @@ function MonumentPage({ monument, requestedMonumentId, theme, onThemeToggle }) {
         </section>
       </section>
     </main>
+  )
+}
+
+function RaidCalculator({ raidData }) {
+  const [copied, setCopied] = useState(false)
+  const [quantity, setQuantity] = useState(1)
+  const [selectedTargetId, setSelectedTargetId] = useState(raidData.targets[0]?.id ?? '')
+  const selectedTarget =
+    raidData.targets.find((target) => target.id === selectedTargetId) ?? raidData.targets[0]
+  const numberFormat = useMemo(() => new Intl.NumberFormat('ru-RU'), [])
+
+  if (!selectedTarget) {
+    return <div className="empty-results">В справочнике пока нет целей для рейда.</div>
+  }
+
+  const normalizedQuantity = Math.min(100, Math.max(1, Number(quantity) || 1))
+  const results = raidData.methods.map((method) => {
+    const amount = Math.ceil((selectedTarget.costs[method.id] ?? 0) * normalizedQuantity)
+
+    return {
+      ...method,
+      amount,
+      charcoal: amount * method.charcoal,
+      sulfur: amount * method.sulfur,
+    }
+  })
+
+  const copyCalculation = async () => {
+    const lines = results.map(
+      (result) =>
+        `${result.name}: ${result.amount} шт. — ${numberFormat.format(result.sulfur)} серы`,
+    )
+
+    await copyText(
+      `${selectedTarget.name}, ${normalizedQuantity} шт.\n${lines.join('\n')}\n${window.location.href}`,
+    )
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1400)
+  }
+
+  return (
+    <section className="raid-calculator" aria-labelledby="raid-title">
+      <div className="raid-heading">
+        <div>
+          <p className="eyebrow">Быстрый расчёт ресурсов</p>
+          <h2 id="raid-title">Калькулятор рейда</h2>
+          <p>Выберите цель и количество. Ниже появятся варианты рейда и стоимость крафта.</p>
+        </div>
+        <label className="quantity-control">
+          <span>Количество целей</span>
+          <input
+            inputMode="numeric"
+            max="100"
+            min="1"
+            onChange={(event) => setQuantity(event.target.value)}
+            onBlur={() => setQuantity(normalizedQuantity)}
+            type="number"
+            value={quantity}
+          />
+        </label>
+      </div>
+
+      <div className="raid-layout">
+        <section className="raid-target-panel" aria-labelledby="target-title">
+          <h3 id="target-title">Что рейдим</h3>
+          <div className="raid-target-list">
+            {raidData.targets.map((target) => (
+              <button
+                aria-pressed={target.id === selectedTarget.id}
+                className={`raid-target ${target.id === selectedTarget.id ? 'active' : ''}`}
+                key={target.id}
+                onClick={() => setSelectedTargetId(target.id)}
+                type="button"
+              >
+                <MediaSlot className="raid-target-media" label={target.shortLabel} src={target.imageUrl} />
+                <span>
+                  <strong>{target.name}</strong>
+                  <small>{target.category}</small>
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="raid-results" aria-labelledby="result-title">
+          <div className="raid-result-header">
+            <div>
+              <span>Расчёт для</span>
+              <h3 id="result-title">
+                {selectedTarget.name} × {normalizedQuantity}
+              </h3>
+            </div>
+            <button className="copy-button" onClick={copyCalculation} type="button">
+              {copied ? 'Скопировано' : 'Скопировать расчёт'}
+            </button>
+          </div>
+
+          <div className="raid-method-list">
+            {results.map((result) => (
+              <article className="raid-method" key={result.id}>
+                <MediaSlot className="raid-method-media" label={result.shortLabel} src={result.imageUrl} />
+                <div className="raid-method-name">
+                  <strong>{result.name}</strong>
+                  <span>{result.amount} шт.</span>
+                </div>
+                <dl>
+                  <div>
+                    <dt>Сера</dt>
+                    <dd>{numberFormat.format(result.sulfur)}</dd>
+                  </div>
+                  <div>
+                    <dt>Уголь</dt>
+                    <dd>{numberFormat.format(result.charcoal)}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
+
+          <p className="raid-disclaimer">
+            Значения ориентировочные для твёрдой стороны построек. После обновлений баланса Rust
+            сверяйте цифры с актуальными игровыми данными.
+          </p>
+        </section>
+      </div>
+    </section>
+  )
+}
+
+function MediaSlot({ className, label, src }) {
+  const [hasError, setHasError] = useState(false)
+
+  useEffect(() => {
+    setHasError(false)
+  }, [src])
+
+  const relativePath = src?.replace(/^\.\/media\//, '')
+
+  return (
+    <div className={`${className} media-slot ${hasError || !src ? 'is-placeholder' : ''}`}>
+      {!hasError && src ? (
+        <img alt="" loading="lazy" onError={() => setHasError(true)} src={src} />
+      ) : (
+        <span className="media-placeholder" aria-label={`Место для изображения: ${label}`}>
+          <strong>{label}</strong>
+          <small>{relativePath || 'Добавьте изображение в public/media'}</small>
+        </span>
+      )}
+    </div>
   )
 }
 

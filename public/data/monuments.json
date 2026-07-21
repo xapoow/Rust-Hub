@@ -11,7 +11,7 @@
       "cards": ["Зеленая", "Красная"],
       "requiresFuse": true,
       "hasRecycler": true,
-      "imageUrl": "./images/monuments/launch-site.svg",
+      "imageUrl": "./media/monuments/launch-site.webp",
       "summary": "Большая и опасная РТ с сильным лутом, высокой радиацией и частым PvP.",
       "tips": [
         "Бери хорошую защиту от радиации и запас аптечек.",
@@ -28,7 +28,7 @@
       "cards": ["Зеленая", "Синяя"],
       "requiresFuse": true,
       "hasRecycler": true,
-      "imageUrl": "./images/monuments/airfield.svg",
+      "imageUrl": "./media/monuments/airfield.webp",
       "summary": "Открытая РТ с подземной головоломкой, переработчиком и длинными PvP-прострелами.",
       "tips": [
         "Осторожно перемещайся между ангарами: там много дальних углов.",
@@ -45,7 +45,7 @@
       "cards": ["Синяя"],
       "requiresFuse": true,
       "hasRecycler": true,
-      "imageUrl": "./images/monuments/water-treatment-plant.svg",
+      "imageUrl": "./media/monuments/water-treatment-plant.webp",
       "summary": "Стабильная РТ для мидгейма с переработчиком, головоломкой и большим числом подходов.",
       "tips": [
         "Перед лутом используй высоту и крыши, чтобы проверить движение.",
@@ -62,7 +62,7 @@
       "cards": ["Зеленая"],
       "requiresFuse": false,
       "hasRecycler": true,
-      "imageUrl": "./images/monuments/satellite-dish.svg",
+      "imageUrl": "./media/monuments/satellite-dish.webp",
       "summary": "Простая ранняя РТ с переработчиком, зеленой картой и умеренным риском.",
       "tips": [
         "Хорошая точка для ранних компонентов и быстрой переработки.",
@@ -79,7 +79,7 @@
       "cards": ["Зеленая", "Синяя", "Красная"],
       "requiresFuse": true,
       "hasRecycler": true,
-      "imageUrl": "./images/monuments/train-yard.svg",
+      "imageUrl": "./media/monuments/train-yard.webp",
       "summary": "Сильная РТ с прогрессией по картам, переработчиком и опасными вертикальными углами.",
       "tips": [
         "Контроль крыш сильно снижает риск во время маршрута головоломки.",
@@ -96,7 +96,7 @@
       "cards": [],
       "requiresFuse": false,
       "hasRecycler": false,
-      "imageUrl": "./images/monuments/dome.svg",
+      "imageUrl": "./media/monuments/dome.webp",
       "summary": "Быстрая parkour-РТ с открытым подъемом и полезным ранним лутом.",
       "tips": [
         "Во время подъема тебя хорошо видно, поэтому сначала осмотрись.",

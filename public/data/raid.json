@@ -1,0 +1,103 @@
+{
+  "updatedAt": "2026-07-21T00:00:00.000Z",
+  "methods": [
+    {
+      "id": "c4",
+      "name": "Взрывчатка с таймером (C4)",
+      "shortLabel": "C4",
+      "imageUrl": "./media/raid/items/c4.webp",
+      "sulfur": 2200,
+      "charcoal": 3000
+    },
+    {
+      "id": "rocket",
+      "name": "Ракета",
+      "shortLabel": "Ракета",
+      "imageUrl": "./media/raid/items/rocket.webp",
+      "sulfur": 1400,
+      "charcoal": 1950
+    },
+    {
+      "id": "satchel",
+      "name": "Сумка с зарядом",
+      "shortLabel": "Сумка",
+      "imageUrl": "./media/raid/items/satchel.webp",
+      "sulfur": 480,
+      "charcoal": 720
+    },
+    {
+      "id": "explosiveAmmo",
+      "name": "Разрывные патроны",
+      "shortLabel": "5.56",
+      "imageUrl": "./media/raid/items/explosive-ammo.webp",
+      "sulfur": 25,
+      "charcoal": 30
+    }
+  ],
+  "targets": [
+    {
+      "id": "wood-wall",
+      "name": "Деревянная стена",
+      "shortLabel": "Дерево",
+      "category": "Стена · твёрдая сторона",
+      "imageUrl": "./media/raid/targets/wood-wall.webp",
+      "costs": { "c4": 1, "rocket": 2, "satchel": 3, "explosiveAmmo": 49 }
+    },
+    {
+      "id": "stone-wall",
+      "name": "Каменная стена",
+      "shortLabel": "Камень",
+      "category": "Стена · твёрдая сторона",
+      "imageUrl": "./media/raid/targets/stone-wall.webp",
+      "costs": { "c4": 2, "rocket": 4, "satchel": 10, "explosiveAmmo": 185 }
+    },
+    {
+      "id": "metal-wall",
+      "name": "Металлическая стена",
+      "shortLabel": "Металл",
+      "category": "Стена · твёрдая сторона",
+      "imageUrl": "./media/raid/targets/metal-wall.webp",
+      "costs": { "c4": 4, "rocket": 8, "satchel": 23, "explosiveAmmo": 400 }
+    },
+    {
+      "id": "armored-wall",
+      "name": "Бронированная стена",
+      "shortLabel": "МВК",
+      "category": "Стена · твёрдая сторона",
+      "imageUrl": "./media/raid/targets/armored-wall.webp",
+      "costs": { "c4": 8, "rocket": 15, "satchel": 46, "explosiveAmmo": 799 }
+    },
+    {
+      "id": "wood-door",
+      "name": "Деревянная дверь",
+      "shortLabel": "Дверь",
+      "category": "Одинарная дверь",
+      "imageUrl": "./media/raid/targets/wood-door.webp",
+      "costs": { "c4": 1, "rocket": 1, "satchel": 1, "explosiveAmmo": 19 }
+    },
+    {
+      "id": "sheet-door",
+      "name": "Металлическая дверь",
+      "shortLabel": "Металл",
+      "category": "Одинарная дверь",
+      "imageUrl": "./media/raid/targets/sheet-door.webp",
+      "costs": { "c4": 1, "rocket": 2, "satchel": 4, "explosiveAmmo": 63 }
+    },
+    {
+      "id": "garage-door",
+      "name": "Гаражная дверь",
+      "shortLabel": "Гараж",
+      "category": "Дверь",
+      "imageUrl": "./media/raid/targets/garage-door.webp",
+      "costs": { "c4": 2, "rocket": 3, "satchel": 9, "explosiveAmmo": 150 }
+    },
+    {
+      "id": "armored-door",
+      "name": "Бронированная дверь",
+      "shortLabel": "МВК",
+      "category": "Одинарная дверь",
+      "imageUrl": "./media/raid/targets/armored-door.webp",
+      "costs": { "c4": 2, "rocket": 4, "satchel": 12, "explosiveAmmo": 200 }
+    }
+  ]
+}
