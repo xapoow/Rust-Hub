@@ -38,7 +38,7 @@
     },
     {
       "id": "water-treatment-plant",
-      "name": "Водокачка",
+      "name": "Очистные сооружения",
       "englishName": "Water Treatment Plant",
       "tier": "Средний тир",
       "radiation": "Низкая",
@@ -89,7 +89,7 @@
     },
     {
       "id": "dome",
-      "name": "Купол",
+      "name": "Сфера",
       "englishName": "Dome",
       "tier": "Низкий тир",
       "radiation": "Низкая",

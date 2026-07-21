@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Check, Copy, ExternalLink, Play, Star } from 'lucide-react'
+import { Check, Copy, Play, Star } from 'lucide-react'
 import './App.css'
 
 const FAVORITES_STORAGE_KEY = 'rust-hub-favorites'
@@ -9,9 +9,6 @@ const PLAYLIST_DATA_URL = `${import.meta.env.BASE_URL}data/playlist.json`
 const RAID_DATA_URL = `${import.meta.env.BASE_URL}data/raid.json`
 const SITE_TITLE = 'Rust Hub'
 const THEME_STORAGE_KEY = 'rust-hub-theme'
-const PLAYLIST_URL =
-  'https://www.youtube.com/playlist?list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd'
-
 const TAG_RULES = [
   ['соло', /\bsolo\b/i],
   ['дуо', /\bduo\b/i],
@@ -140,6 +137,12 @@ function getVideoShareUrl(videoId) {
 
 function getMonumentShareUrl(monumentId) {
   return `${window.location.origin}${window.location.pathname}#/monuments/${encodeURIComponent(monumentId)}`
+}
+
+function getRadiationLevel(radiation) {
+  if (radiation === 'Высокая') return 'high'
+  if (radiation === 'Средняя') return 'medium'
+  return 'low'
 }
 
 async function copyText(value) {
@@ -362,48 +365,45 @@ function Header({ activeView, monumentsData, playlist, raidData, setActiveView, 
     <header className="page-header">
       <div className="header-primary">
         <div className="header-brand">
-          <p className="eyebrow">Хаб по Rust</p>
-          <h1>{SITE_TITLE}</h1>
+          <div className="header-title-row">
+            <h1>{SITE_TITLE}</h1>
+            <span>Хаб по Rust</span>
+          </div>
           <p className="subtitle">
             Видео по базам, заметки по РТ и быстрый расчёт рейда.
           </p>
         </div>
 
-        <div className="header-utility">
+        <div className="header-controls">
           <ThemeToggle theme={theme} onToggle={onThemeToggle} />
-          <a className="youtube-link" href={PLAYLIST_URL} target="_blank" rel="noreferrer">
-            <ExternalLink aria-hidden="true" size={18} strokeWidth={2} />
-            Открыть YouTube
-          </a>
+          <nav className="view-tabs" aria-label="Разделы Rust Hub">
+            <button
+              className={activeView === 'videos' ? 'active' : ''}
+              onClick={() => goToView('videos')}
+              type="button"
+            >
+              <span>Видео</span>
+              <strong>{playlist.videos.length}</strong>
+            </button>
+            <button
+              className={activeView === 'monuments' ? 'active' : ''}
+              onClick={() => goToView('monuments')}
+              type="button"
+            >
+              <span>РТ</span>
+              <strong>{monumentsData.monuments.length}</strong>
+            </button>
+            <button
+              className={activeView === 'raid' ? 'active' : ''}
+              onClick={() => goToView('raid')}
+              type="button"
+            >
+              <span>Рейд</span>
+              <strong>{raidData.targets.length}</strong>
+            </button>
+          </nav>
         </div>
       </div>
-
-      <nav className="view-tabs" aria-label="Разделы Rust Hub">
-        <button
-          className={activeView === 'videos' ? 'active' : ''}
-          onClick={() => goToView('videos')}
-          type="button"
-        >
-          <span>Видео</span>
-          <strong>{playlist.videos.length}</strong>
-        </button>
-        <button
-          className={activeView === 'monuments' ? 'active' : ''}
-          onClick={() => goToView('monuments')}
-          type="button"
-        >
-          <span>РТ</span>
-          <strong>{monumentsData.monuments.length}</strong>
-        </button>
-        <button
-          className={activeView === 'raid' ? 'active' : ''}
-          onClick={() => goToView('raid')}
-          type="button"
-        >
-          <span>Рейд</span>
-          <strong>{raidData.targets.length}</strong>
-        </button>
-      </nav>
     </header>
   )
 }
@@ -514,7 +514,7 @@ function MonumentsHub({ monumentsData }) {
           <span>Поиск по РТ</span>
           <input
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Космодром, Аэродром, Купол..."
+            placeholder="Космодром, Очистные сооружения, Сфера..."
             type="search"
             value={query}
           />
@@ -538,14 +538,25 @@ function MonumentsHub({ monumentsData }) {
 }
 
 function MonumentCard({ monument }) {
+  const radiationLevel = getRadiationLevel(monument.radiation)
+
   return (
-    <a className="monument-card" href={`#/monuments/${encodeURIComponent(monument.id)}`}>
+    <a
+      className={`monument-card radiation-${radiationLevel}`}
+      href={`#/monuments/${encodeURIComponent(monument.id)}`}
+    >
       <MediaSlot className="monument-thumb" label={monument.name} src={monument.imageUrl} />
-      <span className="monument-tier">{monument.tier}</span>
+      <div className="monument-labels">
+        <span className="monument-tier">{monument.tier}</span>
+        <span className="radiation-badge">
+          <span aria-hidden="true" />
+          Радиация: {monument.radiation}
+        </span>
+      </div>
       <strong>{monument.name}</strong>
       <span>{monument.summary}</span>
       <span className="monument-facts">
-        Радиация: {monument.radiation} · Карты: {monument.cards.length ? monument.cards.join(', ') : 'Нет'} · Фьюз:{' '}
+        Карты: {monument.cards.length ? monument.cards.join(', ') : 'Нет'} · Фьюз:{' '}
         {monument.requiresFuse ? 'Нужен' : 'Не нужен'}
       </span>
     </a>
@@ -575,6 +586,8 @@ function MonumentPage({ monument, requestedMonumentId, theme, onThemeToggle }) {
     window.setTimeout(() => setCopied(false), 1400)
   }
 
+  const radiationLevel = getRadiationLevel(monument.radiation)
+
   return (
     <main className="shell">
       <nav className="top-nav" aria-label="Навигация">
@@ -587,9 +600,15 @@ function MonumentPage({ monument, requestedMonumentId, theme, onThemeToggle }) {
         </div>
       </nav>
 
-      <section className="monument-detail">
+      <section className={`monument-detail radiation-${radiationLevel}`}>
         <MediaSlot className="monument-hero-image" label={monument.name} src={monument.imageUrl} />
-        <p className="eyebrow">{monument.tier}</p>
+        <div className="monument-labels">
+          <span className="monument-tier">{monument.tier}</span>
+          <span className="radiation-badge">
+            <span aria-hidden="true" />
+            Радиация: {monument.radiation}
+          </span>
+        </div>
         <h1>{monument.name}</h1>
         <p>{monument.summary}</p>
 
