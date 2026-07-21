@@ -494,7 +494,7 @@
 .monument-stat-grid {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .info-stat {
@@ -519,26 +519,6 @@
 
 .monument-detail .info-stat:first-child {
   border-left: 3px solid var(--monument-accent, var(--accent));
-}
-
-.tips-panel {
-  border-top: 1px solid var(--border);
-  padding-top: 18px;
-}
-
-.tips-panel h2 {
-  font-size: 22px;
-  margin: 0 0 12px;
-}
-
-.tips-panel ul {
-  color: var(--muted);
-  margin: 0;
-  padding-left: 20px;
-}
-
-.tips-panel li + li {
-  margin-top: 8px;
 }
 
 .raid-calculator {

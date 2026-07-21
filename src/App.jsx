@@ -557,7 +557,8 @@ function MonumentCard({ monument }) {
       <span>{monument.summary}</span>
       <span className="monument-facts">
         Карты: {monument.cards.length ? monument.cards.join(', ') : 'Нет'} · Фьюз:{' '}
-        {monument.requiresFuse ? 'Нужен' : 'Не нужен'}
+        {monument.requiresFuse ? 'Нужен' : 'Не нужен'} · Дизель:{' '}
+        {monument.dieselCount ? `${monument.dieselCount} шт.` : 'Нет'}
       </span>
     </a>
   )
@@ -617,16 +618,11 @@ function MonumentPage({ monument, requestedMonumentId, theme, onThemeToggle }) {
           <InfoStat label="Карты" value={monument.cards.length ? monument.cards.join(', ') : 'Нет'} />
           <InfoStat label="Фьюз" value={monument.requiresFuse ? 'Нужен' : 'Не нужен'} />
           <InfoStat label="Переработчик" value={monument.hasRecycler ? 'Есть' : 'Нет'} />
+          <InfoStat
+            label="Дизель"
+            value={monument.dieselCount ? `${monument.dieselCount} шт.` : 'Нет'}
+          />
         </div>
-
-        <section className="tips-panel">
-          <h2>Короткие заметки</h2>
-          <ul>
-            {monument.tips.map((tip) => (
-              <li key={tip}>{tip}</li>
-            ))}
-          </ul>
-        </section>
       </section>
     </main>
   )
