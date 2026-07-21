@@ -22,22 +22,28 @@ raid/items/explosive.satchel.webp
 raid/items/ammo.rifle.explosive.webp
 raid/items/sulfur.webp
 raid/items/charcoal.webp
-
-Подготовленные компоненты для расширенного расчёта:
+raid/items/powder.png
+raid/items/explosives.avif
 raid/items/grenade.beancan.webp
-raid/items/hammer.salvaged.webp
 raid/items/metal.fragments.webp
 raid/items/metalpipe.webp
 
+Недостающие иконки ингредиентов:
+raid/items/lowgradefuel.webp
+raid/items/cloth.webp
+raid/items/techparts.webp
+raid/items/rope.webp
+raid/items/stash.small.webp
+
 Цели рейда:
-raid/targets/wood-wall.webp
+raid/targets/wall.wood.png
 raid/targets/wall.stone.png
-raid/targets/metal-wall.webp
-raid/targets/armored-wall.webp
-raid/targets/wood-door.webp
-raid/targets/sheet-door.webp
+raid/targets/wall.metal.png
+raid/targets/wall.toptier.png
+raid/targets/door.hinged.wood.webp
+raid/targets/door.hinged.metal.webp
 raid/targets/wall.frame.garagedoor.webp
-raid/targets/armored-door.webp
+raid/targets/door.hinged.toptier.webp
 
 Рекомендуемые размеры:
 - РТ: 1280x720 или больше, соотношение 16:9.

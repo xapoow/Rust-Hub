@@ -8,6 +8,46 @@
     "charcoal": {
       "name": "Уголь",
       "imageUrl": "./media/raid/items/charcoal.webp"
+    },
+    "gunpowder": {
+      "name": "Порох",
+      "imageUrl": "./media/raid/items/powder.png"
+    },
+    "explosives": {
+      "name": "Взрывчатка",
+      "imageUrl": "./media/raid/items/explosives.avif"
+    },
+    "metalFragments": {
+      "name": "Фрагменты металла",
+      "imageUrl": "./media/raid/items/metal.fragments.webp"
+    },
+    "lowGradeFuel": {
+      "name": "Топливо низкого качества",
+      "imageUrl": "./media/raid/items/lowgradefuel.webp"
+    },
+    "cloth": {
+      "name": "Ткань",
+      "imageUrl": "./media/raid/items/cloth.webp"
+    },
+    "techTrash": {
+      "name": "Техмусор",
+      "imageUrl": "./media/raid/items/techparts.webp"
+    },
+    "metalPipe": {
+      "name": "Металлическая труба",
+      "imageUrl": "./media/raid/items/metalpipe.webp"
+    },
+    "beancan": {
+      "name": "Бобовая граната",
+      "imageUrl": "./media/raid/items/grenade.beancan.webp"
+    },
+    "rope": {
+      "name": "Верёвка",
+      "imageUrl": "./media/raid/items/rope.webp"
+    },
+    "smallStash": {
+      "name": "Маленький тайник",
+      "imageUrl": "./media/raid/items/stash.small.webp"
     }
   },
   "methods": [
@@ -16,32 +56,100 @@
       "name": "Взрывчатка с таймером (C4)",
       "shortLabel": "C4",
       "imageUrl": "./media/raid/items/explosive.timed.webp",
-      "sulfur": 2200,
-      "charcoal": 3000
+      "yield": 1,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 1000,
+          "ingredients": { "sulfur": 2000, "charcoal": 3000 }
+        },
+        {
+          "output": "explosives",
+          "amount": 20,
+          "ingredients": { "gunpowder": 1000, "sulfur": 200, "metalFragments": 200, "lowGradeFuel": 60 }
+        },
+        {
+          "output": "result",
+          "amount": 1,
+          "ingredients": { "explosives": 20, "cloth": 5, "techTrash": 2 }
+        }
+      ],
+      "totalResources": { "sulfur": 2200, "charcoal": 3000, "metalFragments": 200, "lowGradeFuel": 60, "cloth": 5, "techTrash": 2 }
     },
     {
       "id": "rocket",
       "name": "Ракета",
       "shortLabel": "Ракета",
       "imageUrl": "./media/raid/items/ammo.rocket.basic.webp",
-      "sulfur": 1400,
-      "charcoal": 1950
+      "yield": 1,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 650,
+          "ingredients": { "sulfur": 1300, "charcoal": 1950 }
+        },
+        {
+          "output": "explosives",
+          "amount": 10,
+          "ingredients": { "gunpowder": 500, "sulfur": 100, "metalFragments": 100, "lowGradeFuel": 30 }
+        },
+        {
+          "output": "result",
+          "amount": 1,
+          "ingredients": { "explosives": 10, "gunpowder": 150, "metalPipe": 2 }
+        }
+      ],
+      "totalResources": { "sulfur": 1400, "charcoal": 1950, "metalFragments": 100, "lowGradeFuel": 30, "metalPipe": 2 }
     },
     {
       "id": "satchel",
       "name": "Сумка с зарядом",
       "shortLabel": "Сумка",
       "imageUrl": "./media/raid/items/explosive.satchel.webp",
-      "sulfur": 480,
-      "charcoal": 720
+      "yield": 1,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 240,
+          "ingredients": { "sulfur": 480, "charcoal": 720 }
+        },
+        {
+          "output": "beancan",
+          "amount": 4,
+          "ingredients": { "gunpowder": 240, "metalFragments": 80 }
+        },
+        {
+          "output": "smallStash",
+          "amount": 1,
+          "ingredients": { "cloth": 10 }
+        },
+        {
+          "output": "result",
+          "amount": 1,
+          "ingredients": { "beancan": 4, "rope": 1, "smallStash": 1 }
+        }
+      ],
+      "totalResources": { "sulfur": 480, "charcoal": 720, "metalFragments": 80, "cloth": 10, "rope": 1 }
     },
     {
       "id": "explosiveAmmo",
       "name": "Разрывные патроны",
       "shortLabel": "5.56",
       "imageUrl": "./media/raid/items/ammo.rifle.explosive.webp",
-      "sulfur": 25,
-      "charcoal": 30
+      "yield": 2,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 20,
+          "ingredients": { "sulfur": 40, "charcoal": 60 }
+        },
+        {
+          "output": "result",
+          "amount": 2,
+          "ingredients": { "gunpowder": 20, "sulfur": 10, "metalFragments": 10 }
+        }
+      ],
+      "totalResources": { "sulfur": 50, "charcoal": 60, "metalFragments": 10 }
     }
   ],
   "targets": [
@@ -50,7 +158,7 @@
       "name": "Деревянная стена",
       "shortLabel": "Дерево",
       "category": "Стена · твёрдая сторона",
-      "imageUrl": "./media/raid/targets/wood-wall.webp",
+      "imageUrl": "./media/raid/targets/wall.wood.png",
       "costs": { "c4": 1, "rocket": 2, "satchel": 3, "explosiveAmmo": 49 }
     },
     {
@@ -66,7 +174,7 @@
       "name": "Металлическая стена",
       "shortLabel": "Металл",
       "category": "Стена · твёрдая сторона",
-      "imageUrl": "./media/raid/targets/metal-wall.webp",
+      "imageUrl": "./media/raid/targets/wall.metal.png",
       "costs": { "c4": 4, "rocket": 8, "satchel": 23, "explosiveAmmo": 400 }
     },
     {
@@ -74,7 +182,7 @@
       "name": "Бронированная стена",
       "shortLabel": "МВК",
       "category": "Стена · твёрдая сторона",
-      "imageUrl": "./media/raid/targets/armored-wall.webp",
+      "imageUrl": "./media/raid/targets/wall.toptier.png",
       "costs": { "c4": 8, "rocket": 15, "satchel": 46, "explosiveAmmo": 799 }
     },
     {
@@ -82,7 +190,7 @@
       "name": "Деревянная дверь",
       "shortLabel": "Дверь",
       "category": "Одинарная дверь",
-      "imageUrl": "./media/raid/targets/wood-door.webp",
+      "imageUrl": "./media/raid/targets/door.hinged.wood.webp",
       "costs": { "c4": 1, "rocket": 1, "satchel": 1, "explosiveAmmo": 19 }
     },
     {
@@ -90,7 +198,7 @@
       "name": "Металлическая дверь",
       "shortLabel": "Металл",
       "category": "Одинарная дверь",
-      "imageUrl": "./media/raid/targets/sheet-door.webp",
+      "imageUrl": "./media/raid/targets/door.hinged.metal.webp",
       "costs": { "c4": 1, "rocket": 2, "satchel": 4, "explosiveAmmo": 63 }
     },
     {
@@ -106,7 +214,7 @@
       "name": "Бронированная дверь",
       "shortLabel": "МВК",
       "category": "Одинарная дверь",
-      "imageUrl": "./media/raid/targets/armored-door.webp",
+      "imageUrl": "./media/raid/targets/door.hinged.toptier.webp",
       "costs": { "c4": 2, "rocket": 4, "satchel": 12, "explosiveAmmo": 200 }
     }
   ]

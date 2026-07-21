@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "sync:playlist": "node scripts/sync-playlist.mjs",
+    "validate:raid": "node scripts/validate-raid-data.mjs",
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview"

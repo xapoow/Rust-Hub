@@ -643,20 +643,42 @@ function RaidCalculator({ raidData }) {
   const normalizedQuantity = Math.min(100, Math.max(1, Number(quantity) || 1))
   const results = raidData.methods.map((method) => {
     const amount = Math.ceil((selectedTarget.costs[method.id] ?? 0) * normalizedQuantity)
+    const craftCount = Math.ceil(amount / (method.yield ?? 1))
+    const craftedAmount = craftCount * (method.yield ?? 1)
 
     return {
       ...method,
       amount,
-      charcoal: amount * method.charcoal,
-      sulfur: amount * method.sulfur,
+      craftedAmount,
+      steps: method.craftSteps.map((step) => ({
+        ...step,
+        amount: step.amount * craftCount,
+        ingredients: Object.entries(step.ingredients).map(([resourceId, resourceAmount]) => ({
+          ...raidData.resources[resourceId],
+          amount: resourceAmount * craftCount,
+          id: resourceId,
+        })),
+        outputResource:
+          step.output === 'result'
+            ? { imageUrl: method.imageUrl, name: method.name }
+            : raidData.resources[step.output],
+      })),
+      totals: Object.entries(method.totalResources).map(([resourceId, resourceAmount]) => ({
+        ...raidData.resources[resourceId],
+        amount: resourceAmount * craftCount,
+        id: resourceId,
+      })),
     }
   })
 
   const copyCalculation = async () => {
-    const lines = results.map(
-      (result) =>
-        `${result.name}: ${result.amount} шт. — ${numberFormat.format(result.sulfur)} серы`,
-    )
+    const lines = results.map((result) => {
+      const resources = result.totals
+        .map((resource) => `${resource.name}: ${numberFormat.format(resource.amount)}`)
+        .join(', ')
+
+      return `${result.name}: ${result.amount} шт. — ${resources}`
+    })
 
     await copyText(
       `${selectedTarget.name}, ${normalizedQuantity} шт.\n${lines.join('\n')}\n${window.location.href}`,
@@ -725,27 +747,54 @@ function RaidCalculator({ raidData }) {
           <div className="raid-method-list">
             {results.map((result) => (
               <article className="raid-method" key={result.id}>
-                <MediaSlot className="raid-method-media" label={result.shortLabel} src={result.imageUrl} />
-                <div className="raid-method-name">
-                  <strong>{result.name}</strong>
-                  <span>{result.amount} шт.</span>
+                <div className="raid-method-summary">
+                  <MediaSlot className="raid-method-media" label={result.shortLabel} src={result.imageUrl} />
+                  <div className="raid-method-name">
+                    <strong>{result.name}</strong>
+                    <span>{result.amount} шт.</span>
+                    {result.craftedAmount > result.amount ? (
+                      <small>Крафт пачками: получится {result.craftedAmount} шт.</small>
+                    ) : null}
+                  </div>
                 </div>
-                <dl>
+
+                <ol className="raid-craft-chain" aria-label={`Цепочка крафта: ${result.name}`}>
+                  {result.steps.map((step, stepIndex) => (
+                    <li key={`${result.id}-${step.output}-${stepIndex}`}>
+                      <div className="raid-step-ingredients">
+                        {step.ingredients.map((resource) => (
+                          <ResourceAmount
+                            amount={resource.amount}
+                            key={resource.id}
+                            numberFormat={numberFormat}
+                            resource={resource}
+                          />
+                        ))}
+                      </div>
+                      <span className="raid-step-arrow" aria-hidden="true">→</span>
+                      <ResourceAmount
+                        amount={step.amount}
+                        numberFormat={numberFormat}
+                        resource={step.outputResource}
+                        result
+                      />
+                    </li>
+                  ))}
+                </ol>
+
+                <div className="raid-resource-total">
+                  <span>Итого ресурсов</span>
                   <div>
-                    <dt>
-                      <img alt="" src={raidData.resources.sulfur.imageUrl} />
-                      {raidData.resources.sulfur.name}
-                    </dt>
-                    <dd>{numberFormat.format(result.sulfur)}</dd>
+                    {result.totals.map((resource) => (
+                      <ResourceAmount
+                        amount={resource.amount}
+                        key={resource.id}
+                        numberFormat={numberFormat}
+                        resource={resource}
+                      />
+                    ))}
                   </div>
-                  <div>
-                    <dt>
-                      <img alt="" src={raidData.resources.charcoal.imageUrl} />
-                      {raidData.resources.charcoal.name}
-                    </dt>
-                    <dd>{numberFormat.format(result.charcoal)}</dd>
-                  </div>
-                </dl>
+                </div>
               </article>
             ))}
           </div>
@@ -757,6 +806,36 @@ function RaidCalculator({ raidData }) {
         </section>
       </div>
     </section>
+  )
+}
+
+function ResourceAmount({ amount, numberFormat, resource, result = false }) {
+  return (
+    <span className={`resource-amount ${result ? 'is-result' : ''}`}>
+      <ResourceIcon resource={resource} />
+      <span>
+        <small>{resource.name}</small>
+        <strong>{numberFormat.format(amount)}</strong>
+      </span>
+    </span>
+  )
+}
+
+function ResourceIcon({ resource }) {
+  const [hasError, setHasError] = useState(false)
+
+  useEffect(() => {
+    setHasError(false)
+  }, [resource.imageUrl])
+
+  if (hasError || !resource.imageUrl) {
+    return <span className="resource-icon is-placeholder" aria-hidden="true">{resource.name.slice(0, 1)}</span>
+  }
+
+  return (
+    <span className="resource-icon">
+      <img alt="" onError={() => setHasError(true)} src={resource.imageUrl} />
+    </span>
   )
 }
 
