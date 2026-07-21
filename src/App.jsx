@@ -732,11 +732,17 @@ function RaidCalculator({ raidData }) {
                 </div>
                 <dl>
                   <div>
-                    <dt>Сера</dt>
+                    <dt>
+                      <img alt="" src={raidData.resources.sulfur.imageUrl} />
+                      {raidData.resources.sulfur.name}
+                    </dt>
                     <dd>{numberFormat.format(result.sulfur)}</dd>
                   </div>
                   <div>
-                    <dt>Уголь</dt>
+                    <dt>
+                      <img alt="" src={raidData.resources.charcoal.imageUrl} />
+                      {raidData.resources.charcoal.name}
+                    </dt>
                     <dd>{numberFormat.format(result.charcoal)}</dd>
                   </div>
                 </dl>

@@ -745,10 +745,19 @@
 }
 
 .raid-method dt {
+  align-items: center;
   color: var(--muted);
+  display: flex;
   font-size: 11px;
   font-weight: 700;
+  gap: 6px;
   text-transform: uppercase;
+}
+
+.raid-method dt img {
+  height: 22px;
+  object-fit: contain;
+  width: 22px;
 }
 
 .raid-method dd {

@@ -1,11 +1,21 @@
 {
   "updatedAt": "2026-07-21T00:00:00.000Z",
+  "resources": {
+    "sulfur": {
+      "name": "Сера",
+      "imageUrl": "./media/raid/items/sulfur.webp"
+    },
+    "charcoal": {
+      "name": "Уголь",
+      "imageUrl": "./media/raid/items/charcoal.webp"
+    }
+  },
   "methods": [
     {
       "id": "c4",
       "name": "Взрывчатка с таймером (C4)",
       "shortLabel": "C4",
-      "imageUrl": "./media/raid/items/c4.webp",
+      "imageUrl": "./media/raid/items/explosive.timed.webp",
       "sulfur": 2200,
       "charcoal": 3000
     },
@@ -13,7 +23,7 @@
       "id": "rocket",
       "name": "Ракета",
       "shortLabel": "Ракета",
-      "imageUrl": "./media/raid/items/rocket.webp",
+      "imageUrl": "./media/raid/items/ammo.rocket.basic.webp",
       "sulfur": 1400,
       "charcoal": 1950
     },
@@ -21,7 +31,7 @@
       "id": "satchel",
       "name": "Сумка с зарядом",
       "shortLabel": "Сумка",
-      "imageUrl": "./media/raid/items/satchel.webp",
+      "imageUrl": "./media/raid/items/explosive.satchel.webp",
       "sulfur": 480,
       "charcoal": 720
     },
@@ -29,7 +39,7 @@
       "id": "explosiveAmmo",
       "name": "Разрывные патроны",
       "shortLabel": "5.56",
-      "imageUrl": "./media/raid/items/explosive-ammo.webp",
+      "imageUrl": "./media/raid/items/ammo.rifle.explosive.webp",
       "sulfur": 25,
       "charcoal": 30
     }
@@ -48,7 +58,7 @@
       "name": "Каменная стена",
       "shortLabel": "Камень",
       "category": "Стена · твёрдая сторона",
-      "imageUrl": "./media/raid/targets/stone-wall.webp",
+      "imageUrl": "./media/raid/targets/wall.stone.png",
       "costs": { "c4": 2, "rocket": 4, "satchel": 10, "explosiveAmmo": 185 }
     },
     {
@@ -88,7 +98,7 @@
       "name": "Гаражная дверь",
       "shortLabel": "Гараж",
       "category": "Дверь",
-      "imageUrl": "./media/raid/targets/garage-door.webp",
+      "imageUrl": "./media/raid/targets/wall.frame.garagedoor.webp",
       "costs": { "c4": 2, "rocket": 3, "satchel": 9, "explosiveAmmo": 150 }
     },
     {
