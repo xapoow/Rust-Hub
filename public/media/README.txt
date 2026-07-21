@@ -30,11 +30,10 @@ raid/items/metal.refined.webp
 raid/items/metalpipe.webp
 raid/items/cloth.webp
 raid/items/techparts.webp
-
-Недостающие иконки ингредиентов:
 raid/items/lowgradefuel.webp
 raid/items/rope.webp
 raid/items/stash.small.webp
+raid/items/fat.animal.webp
 
 Цели рейда:
 raid/targets/wall.wood.png
