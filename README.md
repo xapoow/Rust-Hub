@@ -1,12 +1,15 @@
-# Base guides Rust
+# Rust Hub
 
-Static React landing for a YouTube playlist with Rust base design videos.
-The interface includes a persisted light/dark theme toggle.
-It also shows a countdown to the next scheduled playlist sync window.
-Videos can be searched, sorted, filtered by inferred tags, and saved as local
-favorites.
-`public/data/extra-videos.json` can be used for manual fallback videos when the
-YouTube XML feed omits restricted videos.
+Static React hub for Rust base guide videos and lightweight monument notes.
+
+## Features
+
+- YouTube playlist sync through the public XML feed.
+- Video search, sorting, inferred tags, favorites, and copy-link actions.
+- Monument hub with simple cards, detail pages, and name search.
+- Persisted light/dark theme.
+- Countdown to the next scheduled video sync window.
+- Manual fallback videos through `public/data/extra-videos.json`.
 
 ## Commands
 
@@ -18,21 +21,19 @@ npm run build
 npm run preview
 ```
 
-## Playlist Data
+## Data
 
-The playlist data is generated from the public YouTube XML feed:
+Playlist data is generated from:
 
 ```text
 https://www.youtube.com/feeds/videos.xml?playlist_id=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd
 ```
 
-`npm run sync:playlist` writes the normalized result to
-`public/data/playlist.json`. GitHub Actions runs the same sync before building
-and also runs daily so the deployed site can pick up playlist changes.
+`npm run sync:playlist` writes `public/data/playlist.json`. Monument notes live in
+`public/data/monuments.json`.
 
-Private playlists are not supported by this no-backend setup. The playlist must
-be public or unlisted with a feed that is accessible without authentication, and
-individual videos must allow iframe embedding.
+GitHub Actions runs playlist sync before building and on a 30-minute schedule.
+Private playlists are not supported by this no-backend setup.
 
 ## Deployment
 

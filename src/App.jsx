@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
-const DATA_URL = `${import.meta.env.BASE_URL}data/playlist.json`
-const FAVORITES_STORAGE_KEY = 'rust-bases-favorites'
+const FAVORITES_STORAGE_KEY = 'rust-hub-favorites'
 const FETCH_INTERVAL_MS = 30 * 60 * 1000
-const SITE_TITLE = 'Base guides Rust'
-const THEME_STORAGE_KEY = 'rust-bases-theme'
+const MONUMENTS_URL = `${import.meta.env.BASE_URL}data/monuments.json`
+const PLAYLIST_DATA_URL = `${import.meta.env.BASE_URL}data/playlist.json`
+const SITE_TITLE = 'Rust Hub'
+const THEME_STORAGE_KEY = 'rust-hub-theme'
 const PLAYLIST_URL =
   'https://www.youtube.com/playlist?list=PLzzSo-3QjuUrdl5aArPofdMsjCzC5DAQd'
 
@@ -53,9 +54,22 @@ function getInitialFavorites() {
 function getRoute() {
   const hash = window.location.hash.replace(/^#/, '') || '/'
   const videoMatch = hash.match(/^\/video\/([^/?#]+)/)
+  const monumentMatch = hash.match(/^\/monuments\/([^/?#]+)/)
 
   if (videoMatch) {
     return { name: 'video', videoId: decodeURIComponent(videoMatch[1]) }
+  }
+
+  if (monumentMatch) {
+    return { name: 'monument', monumentId: decodeURIComponent(monumentMatch[1]) }
+  }
+
+  if (hash === '/videos') {
+    return { name: 'videos' }
+  }
+
+  if (hash === '/monuments') {
+    return { name: 'monuments' }
   }
 
   return { name: 'home' }
@@ -114,8 +128,12 @@ function sortVideos(videos, sortMode) {
   })
 }
 
-function getShareUrl(videoId) {
+function getVideoShareUrl(videoId) {
   return `${window.location.origin}${window.location.pathname}#/video/${encodeURIComponent(videoId)}`
+}
+
+function getMonumentShareUrl(monumentId) {
+  return `${window.location.origin}${window.location.pathname}#/monuments/${encodeURIComponent(monumentId)}`
 }
 
 async function copyText(value) {
@@ -138,7 +156,7 @@ async function copyText(value) {
 function App() {
   const [route, setRoute] = useState(getRoute)
   const [theme, setTheme] = useState(getInitialTheme)
-  const [playlist, setPlaylist] = useState(null)
+  const [hubData, setHubData] = useState(null)
   const [status, setStatus] = useState('loading')
   const [error, setError] = useState('')
 
@@ -163,29 +181,40 @@ function App() {
   useEffect(() => {
     let ignore = false
 
-    async function loadPlaylist() {
+    async function loadHubData() {
       try {
-        const response = await fetch(`${DATA_URL}?v=${Date.now()}`, { cache: 'no-store' })
+        const cacheKey = Date.now()
+        const [playlistResponse, monumentsResponse] = await Promise.all([
+          fetch(`${PLAYLIST_DATA_URL}?v=${cacheKey}`, { cache: 'no-store' }),
+          fetch(`${MONUMENTS_URL}?v=${cacheKey}`, { cache: 'no-store' }),
+        ])
 
-        if (!response.ok) {
-          throw new Error(`Playlist request failed: ${response.status}`)
+        if (!playlistResponse.ok) {
+          throw new Error(`Playlist request failed: ${playlistResponse.status}`)
         }
 
-        const data = await response.json()
+        if (!monumentsResponse.ok) {
+          throw new Error(`Monuments request failed: ${monumentsResponse.status}`)
+        }
+
+        const [playlist, monuments] = await Promise.all([
+          playlistResponse.json(),
+          monumentsResponse.json(),
+        ])
 
         if (!ignore) {
-          setPlaylist(data)
+          setHubData({ monuments, playlist })
           setStatus('ready')
         }
       } catch (loadError) {
         if (!ignore) {
-          setError(loadError instanceof Error ? loadError.message : 'Unknown playlist error')
+          setError(loadError instanceof Error ? loadError.message : 'Unknown hub data error')
           setStatus('error')
         }
       }
     }
 
-    loadPlaylist()
+    loadHubData()
 
     return () => {
       ignore = true
@@ -193,30 +222,35 @@ function App() {
   }, [])
 
   const selectedVideo = useMemo(() => {
-    if (!playlist || route.name !== 'video') return null
-    return playlist.videos.find((video) => video.id === route.videoId) ?? null
-  }, [playlist, route])
+    if (!hubData?.playlist || route.name !== 'video') return null
+    return hubData.playlist.videos.find((video) => video.id === route.videoId) ?? null
+  }, [hubData, route])
+
+  const selectedMonument = useMemo(() => {
+    if (!hubData?.monuments || route.name !== 'monument') return null
+    return hubData.monuments.monuments.find((monument) => monument.id === route.monumentId) ?? null
+  }, [hubData, route])
 
   const toggleTheme = () => {
     setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'))
   }
 
   if (status === 'loading') {
-    return <StatusView title="Loading playlist" theme={theme} onThemeToggle={toggleTheme} />
+    return <StatusView title="Loading Rust Hub" theme={theme} onThemeToggle={toggleTheme} />
   }
 
   if (status === 'error') {
     return (
       <StatusView
-        title="Playlist failed to load"
-        detail={error || 'Check that data/playlist.json is available after build.'}
+        title="Rust Hub failed to load"
+        detail={error || 'Check that data files are available after build.'}
         theme={theme}
         onThemeToggle={toggleTheme}
       />
     )
   }
 
-  if (!playlist?.videos?.length) {
+  if (!hubData?.playlist?.videos?.length) {
     return (
       <StatusView
         title="No videos in playlist"
@@ -238,7 +272,26 @@ function App() {
     )
   }
 
-  return <HomePage playlist={playlist} theme={theme} onThemeToggle={toggleTheme} />
+  if (route.name === 'monument') {
+    return (
+      <MonumentPage
+        monument={selectedMonument}
+        requestedMonumentId={route.monumentId}
+        theme={theme}
+        onThemeToggle={toggleTheme}
+      />
+    )
+  }
+
+  return (
+    <HomePage
+      initialView={route.name === 'monuments' ? 'monuments' : 'videos'}
+      monumentsData={hubData.monuments}
+      playlist={hubData.playlist}
+      theme={theme}
+      onThemeToggle={toggleTheme}
+    />
+  )
 }
 
 function StatusView({ title, detail, theme, onThemeToggle }) {
@@ -254,7 +307,79 @@ function StatusView({ title, detail, theme, onThemeToggle }) {
   )
 }
 
-function HomePage({ playlist, theme, onThemeToggle }) {
+function HomePage({ initialView, monumentsData, playlist, theme, onThemeToggle }) {
+  const [activeView, setActiveView] = useState(initialView)
+
+  useEffect(() => {
+    setActiveView(initialView)
+  }, [initialView])
+
+  const showVideos = activeView === 'videos'
+
+  return (
+    <main className="shell">
+      <Header
+        activeView={activeView}
+        monumentsData={monumentsData}
+        playlist={playlist}
+        setActiveView={setActiveView}
+        theme={theme}
+        onThemeToggle={onThemeToggle}
+      />
+
+      {showVideos ? (
+        <VideosHub playlist={playlist} />
+      ) : (
+        <MonumentsHub monumentsData={monumentsData} />
+      )}
+    </main>
+  )
+}
+
+function Header({ activeView, monumentsData, playlist, setActiveView, theme, onThemeToggle }) {
+  const goToView = (view) => {
+    window.location.hash = view === 'videos' ? '#/videos' : '#/monuments'
+    setActiveView(view)
+  }
+
+  return (
+    <header className="page-header">
+      <div>
+        <p className="eyebrow">Rust knowledge hub</p>
+        <h1>{SITE_TITLE}</h1>
+        <p className="subtitle">
+          Simple hub for base guides, monument notes, and quick Rust reference.
+        </p>
+        <FetchCountdown syncedAt={playlist.syncedAt} />
+      </div>
+
+      <div className="header-actions">
+        <div className="view-tabs" aria-label="Hub sections">
+          <button
+            className={activeView === 'videos' ? 'active' : ''}
+            onClick={() => goToView('videos')}
+            type="button"
+          >
+            Videos {playlist.videos.length}
+          </button>
+          <button
+            className={activeView === 'monuments' ? 'active' : ''}
+            onClick={() => goToView('monuments')}
+            type="button"
+          >
+            Monuments {monumentsData.monuments.length}
+          </button>
+        </div>
+        <ThemeToggle theme={theme} onToggle={onThemeToggle} />
+        <a className="playlist-link" href={PLAYLIST_URL} target="_blank" rel="noreferrer">
+          Open YouTube
+        </a>
+      </div>
+    </header>
+  )
+}
+
+function VideosHub({ playlist }) {
   const [activeTag, setActiveTag] = useState('all')
   const [favorites, setFavorites] = useState(getInitialFavorites)
   const [query, setQuery] = useState('')
@@ -305,8 +430,7 @@ function HomePage({ playlist, theme, onThemeToggle }) {
   }
 
   return (
-    <main className="shell">
-      <Header playlist={playlist} theme={theme} onThemeToggle={onThemeToggle} />
+    <>
       <FeedStatus playlist={playlist} />
 
       <PlaylistControls
@@ -336,7 +460,134 @@ function HomePage({ playlist, theme, onThemeToggle }) {
       {!visibleVideos.length ? (
         <div className="empty-results">No videos match the current search and filters.</div>
       ) : null}
+    </>
+  )
+}
+
+function MonumentsHub({ monumentsData }) {
+  const [query, setQuery] = useState('')
+  const visibleMonuments = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase()
+
+    if (!normalizedQuery) {
+      return monumentsData.monuments
+    }
+
+    return monumentsData.monuments.filter((monument) =>
+      `${monument.name} ${monument.summary}`.toLowerCase().includes(normalizedQuery),
+    )
+  }, [monumentsData.monuments, query])
+
+  return (
+    <>
+      <section className="playlist-controls monument-controls" aria-label="Monument search">
+        <label className="search-box">
+          <span>Search monuments</span>
+          <input
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Launch Site, Airfield, Dome..."
+            type="search"
+            value={query}
+          />
+        </label>
+        <p className="result-count">
+          Showing {visibleMonuments.length} of {monumentsData.monuments.length}
+        </p>
+      </section>
+
+      <section className="monument-grid" aria-label="Rust monuments">
+        {visibleMonuments.map((monument) => (
+          <MonumentCard key={monument.id} monument={monument} />
+        ))}
+      </section>
+
+      {!visibleMonuments.length ? (
+        <div className="empty-results">No monuments match the current search.</div>
+      ) : null}
+    </>
+  )
+}
+
+function MonumentCard({ monument }) {
+  return (
+    <a className="monument-card" href={`#/monuments/${encodeURIComponent(monument.id)}`}>
+      <span className="monument-tier">{monument.tier}</span>
+      <strong>{monument.name}</strong>
+      <span>{monument.summary}</span>
+      <span className="monument-facts">
+        Radiation: {monument.radiation} · Cards: {monument.cards.length ? monument.cards.join(', ') : 'None'} · Fuse:{' '}
+        {monument.requiresFuse ? 'Yes' : 'No'}
+      </span>
+    </a>
+  )
+}
+
+function MonumentPage({ monument, requestedMonumentId, theme, onThemeToggle }) {
+  const [copied, setCopied] = useState(false)
+
+  if (!monument) {
+    return (
+      <main className="shell status-shell">
+        <section className="status-panel">
+          <p className="eyebrow">Monument not found</p>
+          <h1>{requestedMonumentId}</h1>
+          <a className="playlist-link" href="#/monuments">
+            Back to monuments
+          </a>
+        </section>
+      </main>
+    )
+  }
+
+  const copyMonumentLink = async () => {
+    await copyText(getMonumentShareUrl(monument.id))
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1400)
+  }
+
+  return (
+    <main className="shell">
+      <nav className="top-nav" aria-label="Navigation">
+        <a href="#/monuments">Back to monuments</a>
+        <div className="nav-actions">
+          <ThemeToggle theme={theme} onToggle={onThemeToggle} />
+          <button className="copy-button" onClick={copyMonumentLink} type="button">
+            {copied ? 'Copied' : 'Copy link'}
+          </button>
+        </div>
+      </nav>
+
+      <section className="monument-detail">
+        <p className="eyebrow">{monument.tier}</p>
+        <h1>{monument.name}</h1>
+        <p>{monument.summary}</p>
+
+        <div className="monument-stat-grid">
+          <InfoStat label="Radiation" value={monument.radiation} />
+          <InfoStat label="Cards" value={monument.cards.length ? monument.cards.join(', ') : 'None'} />
+          <InfoStat label="Fuse" value={monument.requiresFuse ? 'Required' : 'Not required'} />
+          <InfoStat label="Recycler" value={monument.hasRecycler ? 'Available' : 'No recycler'} />
+        </div>
+
+        <section className="tips-panel">
+          <h2>Quick notes</h2>
+          <ul>
+            {monument.tips.map((tip) => (
+              <li key={tip}>{tip}</li>
+            ))}
+          </ul>
+        </section>
+      </section>
     </main>
+  )
+}
+
+function InfoStat({ label, value }) {
+  return (
+    <div className="info-stat">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
   )
 }
 
@@ -387,7 +638,7 @@ function PlaylistControls({
     <section className="playlist-controls" aria-label="Playlist controls">
       <div className="control-row">
         <label className="search-box">
-          <span>Search</span>
+          <span>Search videos</span>
           <input
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Title or author"
@@ -444,28 +695,6 @@ function FilterButton({ active, children, disabled = false, onClick }) {
   )
 }
 
-function Header({ playlist, theme, onThemeToggle }) {
-  return (
-    <header className="page-header">
-      <div>
-        <p className="eyebrow">YouTube playlist</p>
-        <h1>{SITE_TITLE}</h1>
-        <p className="subtitle">
-          {playlist.videos.length} videos about Rust base design by {playlist.channel.name}
-        </p>
-        <FetchCountdown syncedAt={playlist.syncedAt} />
-      </div>
-
-      <div className="header-actions">
-        <ThemeToggle theme={theme} onToggle={onThemeToggle} />
-        <a className="playlist-link" href={PLAYLIST_URL} target="_blank" rel="noreferrer">
-          Open YouTube
-        </a>
-      </div>
-    </header>
-  )
-}
-
 function FetchCountdown({ syncedAt }) {
   const [now, setNow] = useState(() => Date.now())
   const nextFetchAt = getNextFetchAt(now)
@@ -478,7 +707,7 @@ function FetchCountdown({ syncedAt }) {
 
   return (
     <div className="fetch-countdown" aria-live="polite">
-      <span>Next fetch in about</span>
+      <span>Next video fetch in about</span>
       <strong>{formatCountdown(nextFetchAt - now)}</strong>
       {syncedAt ? <span>Last sync: {formatDateTime(syncedAt)}</span> : null}
     </div>
@@ -504,7 +733,7 @@ function VideoCard({ favorite, onFavoriteToggle, video }) {
   const [copied, setCopied] = useState(false)
 
   const copyVideoLink = async () => {
-    await copyText(getShareUrl(video.id))
+    await copyText(getVideoShareUrl(video.id))
     setCopied(true)
     window.setTimeout(() => setCopied(false), 1400)
   }
@@ -559,8 +788,8 @@ function VideoPage({ selectedVideo, requestedVideoId, theme, onThemeToggle }) {
         <section className="status-panel">
           <p className="eyebrow">Video not found</p>
           <h1>{requestedVideoId}</h1>
-          <a className="playlist-link" href="#/">
-            Back to grid
+          <a className="playlist-link" href="#/videos">
+            Back to videos
           </a>
         </section>
       </main>
@@ -568,7 +797,7 @@ function VideoPage({ selectedVideo, requestedVideoId, theme, onThemeToggle }) {
   }
 
   const copyCurrentVideoLink = async () => {
-    await copyText(getShareUrl(selectedVideo.id))
+    await copyText(getVideoShareUrl(selectedVideo.id))
     setCopied(true)
     window.setTimeout(() => setCopied(false), 1400)
   }
@@ -576,7 +805,7 @@ function VideoPage({ selectedVideo, requestedVideoId, theme, onThemeToggle }) {
   return (
     <main className="shell">
       <nav className="top-nav" aria-label="Navigation">
-        <a href="#/">Back to videos</a>
+        <a href="#/videos">Back to videos</a>
         <div className="nav-actions">
           <ThemeToggle theme={theme} onToggle={onThemeToggle} />
           <button className="copy-button" onClick={copyCurrentVideoLink} type="button">

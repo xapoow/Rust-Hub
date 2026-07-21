@@ -189,6 +189,29 @@
   padding: 8px;
 }
 
+.view-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.view-tabs button {
+  background: var(--button);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.view-tabs button.active {
+  background: var(--text);
+  border-color: var(--accent);
+  box-shadow: inset 4px 0 0 var(--accent);
+  color: var(--surface);
+}
+
 .playlist-link,
 .top-nav a,
 .copy-button,
@@ -240,6 +263,121 @@
   display: grid;
   gap: 18px;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.monument-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.monument-controls {
+  border-left-color: var(--accent);
+}
+
+.monument-card {
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--accent);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  color: var(--text);
+  display: grid;
+  gap: 12px;
+  min-height: 220px;
+  padding: 18px;
+  text-decoration: none;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.monument-card:hover {
+  box-shadow: 8px 8px 0 var(--shadow);
+  transform: translate(-2px, -2px);
+}
+
+.monument-card strong {
+  font-size: 26px;
+  line-height: 1.08;
+}
+
+.monument-card > span:not(.monument-tier):not(.monument-facts) {
+  color: var(--muted);
+}
+
+.monument-tier {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.monument-facts {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+  padding-top: 12px;
+}
+
+.monument-detail {
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--accent);
+  box-shadow: 8px 8px 0 var(--shadow);
+  display: grid;
+  gap: 22px;
+  padding: 26px;
+}
+
+.monument-detail > p:not(.eyebrow) {
+  color: var(--muted);
+  max-width: 760px;
+}
+
+.monument-stat-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.info-stat {
+  background: var(--button);
+  border: 1px solid var(--border);
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+}
+
+.info-stat span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.info-stat strong {
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.tips-panel {
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.tips-panel h2 {
+  font-size: 22px;
+  margin: 0 0 12px;
+}
+
+.tips-panel ul {
+  color: var(--muted);
+  margin: 0;
+  padding-left: 20px;
+}
+
+.tips-panel li + li {
+  margin-top: 8px;
 }
 
 .video-card {
@@ -517,6 +655,11 @@
     flex-direction: column;
   }
 
+  .view-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
   .playlist-link,
   .top-nav a,
   .copy-button,
@@ -556,6 +699,10 @@
 
   .watch-layout {
     grid-template-columns: 1fr;
+  }
+
+  .monument-stat-grid {
+    grid-template-columns: 1fr 1fr;
   }
 
   .watch-details {
@@ -602,9 +749,33 @@
     grid-template-columns: 1fr;
   }
 
+  .monument-grid {
+    gap: 14px;
+    grid-template-columns: 1fr;
+  }
+
   .video-card {
     border-left-width: 4px;
     clip-path: none;
+  }
+
+  .monument-card {
+    clip-path: none;
+    min-height: auto;
+  }
+
+  .monument-card:hover {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .monument-detail {
+    box-shadow: none;
+    padding: 18px;
+  }
+
+  .monument-stat-grid {
+    grid-template-columns: 1fr;
   }
 
   .video-card:hover {

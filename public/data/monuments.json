@@ -1,0 +1,96 @@
+{
+  "updatedAt": "2026-07-21T00:00:00.000Z",
+  "source": "manual",
+  "monuments": [
+    {
+      "id": "launch-site",
+      "name": "Launch Site",
+      "tier": "High tier",
+      "radiation": "High",
+      "cards": ["Green", "Red"],
+      "requiresFuse": true,
+      "hasRecycler": true,
+      "summary": "Large high-risk monument with strong loot, heavy radiation, and frequent PvP.",
+      "tips": [
+        "Bring strong radiation protection and enough meds.",
+        "Expect counters near main loot routes and recycler paths."
+      ],
+      "relatedVideos": []
+    },
+    {
+      "id": "airfield",
+      "name": "Airfield",
+      "tier": "Mid tier",
+      "radiation": "Medium",
+      "cards": ["Green", "Blue"],
+      "requiresFuse": true,
+      "hasRecycler": true,
+      "summary": "Open monument with underground card puzzle, recycler access, and wide PvP sightlines.",
+      "tips": [
+        "Move carefully between hangars because sightlines are long.",
+        "Check recycler area before committing to loot."
+      ],
+      "relatedVideos": []
+    },
+    {
+      "id": "water-treatment-plant",
+      "name": "Water Treatment Plant",
+      "tier": "Mid tier",
+      "radiation": "Low",
+      "cards": ["Blue"],
+      "requiresFuse": true,
+      "hasRecycler": true,
+      "summary": "Reliable mid-game monument with recycler, puzzle loot, and many approach angles.",
+      "tips": [
+        "Use elevation and rooftops to scout before looting.",
+        "The monument has many third-party angles, so avoid tunnel vision."
+      ],
+      "relatedVideos": []
+    },
+    {
+      "id": "satellite-dish",
+      "name": "Satellite Dish",
+      "tier": "Low tier",
+      "radiation": "Low",
+      "cards": ["Green"],
+      "requiresFuse": false,
+      "hasRecycler": true,
+      "summary": "Simple early monument with recycler, green-card puzzle value, and modest contest risk.",
+      "tips": [
+        "Good early stop for components and a recycler run.",
+        "Dish structures give quick cover but limited escape routes."
+      ],
+      "relatedVideos": []
+    },
+    {
+      "id": "train-yard",
+      "name": "Train Yard",
+      "tier": "Mid tier",
+      "radiation": "Medium",
+      "cards": ["Green", "Blue", "Red"],
+      "requiresFuse": true,
+      "hasRecycler": true,
+      "summary": "Strong monument with card progression, recycler, and dangerous vertical angles.",
+      "tips": [
+        "Control rooflines before starting puzzle routes.",
+        "Train cars and buildings create many close-range ambush spots."
+      ],
+      "relatedVideos": []
+    },
+    {
+      "id": "dome",
+      "name": "Dome",
+      "tier": "Low tier",
+      "radiation": "Low",
+      "cards": [],
+      "requiresFuse": false,
+      "hasRecycler": false,
+      "summary": "Fast parkour monument with exposed climbing route and useful early loot.",
+      "tips": [
+        "You are exposed while climbing, so scout before going up.",
+        "Falling is often more dangerous than the monument itself."
+      ],
+      "relatedVideos": []
+    }
+  ]
+}
