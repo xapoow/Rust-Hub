@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Check, Copy, ExternalLink, Play, Star } from 'lucide-react'
 import './App.css'
 
 const FAVORITES_STORAGE_KEY = 'rust-hub-favorites'
@@ -359,44 +360,50 @@ function Header({ activeView, monumentsData, playlist, raidData, setActiveView, 
 
   return (
     <header className="page-header">
-      <div>
-        <p className="eyebrow">Хаб по Rust</p>
-        <h1>{SITE_TITLE}</h1>
-        <p className="subtitle">
-          Простой хаб с видео по базам, заметками по РТ и быстрыми справками.
-        </p>
-        <FetchCountdown syncedAt={playlist.syncedAt} />
+      <div className="header-primary">
+        <div className="header-brand">
+          <p className="eyebrow">Хаб по Rust</p>
+          <h1>{SITE_TITLE}</h1>
+          <p className="subtitle">
+            Видео по базам, заметки по РТ и быстрый расчёт рейда.
+          </p>
+        </div>
+
+        <div className="header-utility">
+          <ThemeToggle theme={theme} onToggle={onThemeToggle} />
+          <a className="youtube-link" href={PLAYLIST_URL} target="_blank" rel="noreferrer">
+            <ExternalLink aria-hidden="true" size={18} strokeWidth={2} />
+            Открыть YouTube
+          </a>
+        </div>
       </div>
 
-      <div className="header-actions">
-        <div className="view-tabs" aria-label="Разделы Rust Hub">
-          <button
-            className={activeView === 'videos' ? 'active' : ''}
-            onClick={() => goToView('videos')}
-            type="button"
-          >
-            Видео {playlist.videos.length}
-          </button>
-          <button
-            className={activeView === 'monuments' ? 'active' : ''}
-            onClick={() => goToView('monuments')}
-            type="button"
-          >
-            РТ {monumentsData.monuments.length}
-          </button>
-          <button
-            className={activeView === 'raid' ? 'active' : ''}
-            onClick={() => goToView('raid')}
-            type="button"
-          >
-            Рейд {raidData.targets.length}
-          </button>
-        </div>
-        <ThemeToggle theme={theme} onToggle={onThemeToggle} />
-        <a className="playlist-link" href={PLAYLIST_URL} target="_blank" rel="noreferrer">
-          Открыть YouTube
-        </a>
-      </div>
+      <nav className="view-tabs" aria-label="Разделы Rust Hub">
+        <button
+          className={activeView === 'videos' ? 'active' : ''}
+          onClick={() => goToView('videos')}
+          type="button"
+        >
+          <span>Видео</span>
+          <strong>{playlist.videos.length}</strong>
+        </button>
+        <button
+          className={activeView === 'monuments' ? 'active' : ''}
+          onClick={() => goToView('monuments')}
+          type="button"
+        >
+          <span>РТ</span>
+          <strong>{monumentsData.monuments.length}</strong>
+        </button>
+        <button
+          className={activeView === 'raid' ? 'active' : ''}
+          onClick={() => goToView('raid')}
+          type="button"
+        >
+          <span>Рейд</span>
+          <strong>{raidData.targets.length}</strong>
+        </button>
+      </nav>
     </header>
   )
 }
@@ -772,15 +779,16 @@ function FeedStatus({ playlist }) {
   return (
     <section className="feed-status" aria-label="Feed status">
       <div>
-        <span>Последний sync</span>
+        <span>Последнее обновление</span>
         <strong>{formatDateTime(playlist.syncedAt)}</strong>
       </div>
+      <FetchCountdown />
       <div>
-        <span>Видео в feed</span>
+        <span>Видео из YouTube</span>
         <strong>{feedCount}</strong>
       </div>
       <div>
-        <span>Ручной fallback</span>
+        <span>Добавлено вручную</span>
         <strong>{manualCount}</strong>
       </div>
       <div>
@@ -868,7 +876,7 @@ function FilterButton({ active, children, disabled = false, onClick }) {
   )
 }
 
-function FetchCountdown({ syncedAt }) {
+function FetchCountdown() {
   const [now, setNow] = useState(() => Date.now())
   const nextFetchAt = getNextFetchAt(now)
 
@@ -880,9 +888,8 @@ function FetchCountdown({ syncedAt }) {
 
   return (
     <div className="fetch-countdown" aria-live="polite">
-      <span>Следующий fetch видео примерно через</span>
+      <span>Следующее обновление</span>
       <strong>{formatCountdown(nextFetchAt - now)}</strong>
-      {syncedAt ? <span>Последний sync: {formatDateTime(syncedAt)}</span> : null}
     </div>
   )
 }
@@ -917,7 +924,7 @@ function VideoCard({ favorite, onFavoriteToggle, video }) {
         <span className="thumb-wrap">
           <img src={video.thumbnailUrl} alt="" loading="lazy" />
           <span className="play-badge" aria-hidden="true">
-            Смотреть
+            <Play fill="currentColor" size={22} strokeWidth={2} />
           </span>
         </span>
         <span className="video-meta">
@@ -935,18 +942,27 @@ function VideoCard({ favorite, onFavoriteToggle, video }) {
             ? video.tags.map((tag) => <span key={tag}>{tag}</span>)
             : <span>без тегов</span>}
         </div>
-        <button
-          className={favorite ? 'favorite-button active' : 'favorite-button'}
-          onClick={() => onFavoriteToggle(video.id)}
-          type="button"
-          aria-pressed={favorite}
-          aria-label={favorite ? 'Убрать из избранного' : 'Добавить в избранное'}
-        >
-          {favorite ? 'В избранном' : 'В избранное'}
-        </button>
-        <button className="copy-button" onClick={copyVideoLink} type="button">
-          {copied ? 'Скопировано' : 'Скопировать'}
-        </button>
+        <div className="card-icon-actions">
+          <button
+            className={`icon-button favorite-button ${favorite ? 'active' : ''}`}
+            onClick={() => onFavoriteToggle(video.id)}
+            type="button"
+            aria-pressed={favorite}
+            aria-label={favorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+            title={favorite ? 'Убрать из избранного' : 'Добавить в избранное'}
+          >
+            <Star aria-hidden="true" fill={favorite ? 'currentColor' : 'none'} size={18} />
+          </button>
+          <button
+            className="icon-button copy-button"
+            onClick={copyVideoLink}
+            type="button"
+            aria-label={copied ? 'Ссылка скопирована' : 'Скопировать ссылку'}
+            title={copied ? 'Ссылка скопирована' : 'Скопировать ссылку'}
+          >
+            {copied ? <Check aria-hidden="true" size={18} /> : <Copy aria-hidden="true" size={18} />}
+          </button>
+        </div>
       </div>
     </article>
   )

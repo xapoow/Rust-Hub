@@ -5,13 +5,24 @@
 }
 
 .page-header {
-  border-left: 6px solid var(--accent);
-  display: flex;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--accent);
+  display: grid;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.header-primary {
   align-items: flex-end;
+  display: flex;
+  gap: 32px;
   justify-content: space-between;
-  gap: 28px;
-  margin-bottom: 26px;
-  padding: 20px 0 22px 22px;
+  padding: 24px 26px 22px;
+}
+
+.header-brand {
+  min-width: 0;
 }
 
 .eyebrow {
@@ -29,28 +40,19 @@
 }
 
 .page-header h1 {
-  margin-bottom: 12px;
+  font-size: 54px;
+  margin-bottom: 8px;
 }
 
 .fetch-countdown {
-  align-items: center;
-  color: var(--muted);
-  display: flex;
-  flex-wrap: wrap;
-  font-size: 14px;
-  gap: 8px;
-  margin-top: 14px;
+  display: grid;
+  gap: 3px;
 }
 
 .fetch-countdown strong {
-  background: var(--button);
-  border: 1px solid var(--border);
-  border-radius: 2px;
   color: var(--text);
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
-  min-width: 58px;
-  padding: 4px 8px;
-  text-align: center;
 }
 
 .playlist-controls {
@@ -67,8 +69,8 @@
   border: 1px dashed var(--border);
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-  margin: -10px 0 24px;
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+  margin: 0 0 24px;
   padding: 14px;
 }
 
@@ -178,43 +180,73 @@
   margin-top: 12px;
 }
 
-.header-actions,
 .nav-actions {
   align-items: center;
   display: flex;
   gap: 10px;
 }
 
-.header-actions {
-  background: color-mix(in srgb, var(--surface) 78%, transparent);
-  border: 1px solid var(--border);
-  padding: 8px;
+.header-utility {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 12px;
 }
 
 .view-tabs {
+  background: color-mix(in srgb, var(--button) 72%, transparent);
+  border-top: 1px solid var(--border);
   display: flex;
-  gap: 4px;
+  gap: 0;
+  padding: 0 18px;
 }
 
 .view-tabs button {
-  background: var(--button);
-  border: 1px solid var(--border);
-  border-radius: 2px;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--border);
   color: var(--text);
   cursor: pointer;
+  display: flex;
+  gap: 10px;
   font-weight: 700;
-  min-height: 42px;
-  padding: 0 12px;
+  justify-content: center;
+  min-height: 56px;
+  min-width: 128px;
+  padding: 0 22px;
+}
+
+.view-tabs button:first-child {
+  border-left: 1px solid var(--border);
+}
+
+.view-tabs button strong {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: inline-flex;
+  font-size: 11px;
+  height: 22px;
+  justify-content: center;
+  min-width: 22px;
+  padding: 0 5px;
 }
 
 .view-tabs button.active {
   background: var(--text);
-  border-color: var(--accent);
-  box-shadow: inset 4px 0 0 var(--accent);
+  box-shadow: inset 0 -4px 0 var(--accent);
   color: var(--surface);
 }
 
+.view-tabs button.active strong {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
 .playlist-link,
+.youtube-link,
 .top-nav a,
 .copy-button,
 .theme-toggle {
@@ -235,11 +267,30 @@
 }
 
 .playlist-link:hover,
+.youtube-link:hover,
 .top-nav a:hover,
 .copy-button:hover,
 .theme-toggle:hover {
   border-color: var(--accent);
   transform: translate(-2px, -2px);
+}
+
+.youtube-link {
+  align-items: center;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: #fff;
+  display: inline-flex;
+  font-weight: 800;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.youtube-link:hover {
+  border-color: var(--text);
 }
 
 .theme-toggle {
@@ -754,18 +805,16 @@
   align-items: center;
   background: rgb(21 21 21 / 86%);
   border: 1px solid rgb(255 255 255 / 44%);
-  border-radius: 2px;
+  border-radius: 50%;
   color: white;
   display: flex;
-  font-size: 12px;
-  font-weight: 700;
-  height: 44px;
+  height: 46px;
   justify-content: center;
   left: 50%;
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 54px;
+  width: 46px;
 }
 
 .video-meta {
@@ -799,6 +848,12 @@
   padding: 12px 16px;
 }
 
+.card-icon-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
 .favorite-button:hover,
 .filter-chip:hover {
   border-color: var(--accent);
@@ -826,10 +881,7 @@
   border-radius: 2px;
   color: var(--text);
   cursor: pointer;
-  font-size: 13px;
-  font-weight: 700;
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: 36px;
 }
 
 .copy-button {
@@ -842,6 +894,16 @@
   font-weight: 700;
   min-height: 34px;
   padding: 0 12px;
+}
+
+.icon-button {
+  align-items: center;
+  display: inline-flex;
+  height: 36px;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0;
+  width: 36px;
 }
 
 .favorite-button.active {
@@ -931,13 +993,8 @@
 }
 
 @media (max-width: 980px) {
-  .page-header {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .header-actions {
-    align-self: flex-start;
+  .header-primary {
+    align-items: flex-start;
   }
 
   .feed-status {
@@ -974,10 +1031,8 @@
 
   .page-header {
     margin-bottom: 18px;
-    padding: 16px 0 16px 16px;
   }
 
-  .header-actions,
   .nav-actions {
     align-items: stretch;
     flex-direction: column;
@@ -986,9 +1041,26 @@
   .view-tabs {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    padding: 0;
+  }
+
+  .view-tabs button {
+    min-width: 0;
+    padding-inline: 12px;
+  }
+
+  .header-primary {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .header-utility {
+    justify-content: space-between;
   }
 
   .playlist-link,
+  .youtube-link,
   .top-nav a,
   .copy-button,
   .theme-toggle {
@@ -1014,11 +1086,6 @@
 
   .filter-chip {
     flex: 0 0 auto;
-  }
-
-  .card-actions {
-    align-items: stretch;
-    flex-direction: column;
   }
 
   .feed-status {
@@ -1068,22 +1135,31 @@
   }
 
   .page-header {
-    border-left-width: 4px;
-    padding-left: 12px;
+    border-top-width: 4px;
   }
 
-  .subtitle,
-  .fetch-countdown {
+  .subtitle {
     font-size: 13px;
   }
 
-  .fetch-countdown {
-    align-items: stretch;
-    flex-direction: column;
+  .page-header h1 {
+    font-size: 42px;
   }
 
-  .fetch-countdown strong {
-    width: fit-content;
+  .header-primary {
+    padding: 16px;
+  }
+
+  .header-utility {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .view-tabs button {
+    flex-direction: column;
+    gap: 3px;
+    min-height: 58px;
+    padding-inline: 6px;
   }
 
   .feed-status {
@@ -1170,12 +1246,13 @@
   }
 
   .card-actions {
+    align-items: flex-end;
     padding: 10px 12px;
   }
 
   .play-badge {
     height: 36px;
-    width: 48px;
+    width: 36px;
   }
 
   .watch-details {
@@ -1185,12 +1262,13 @@
 }
 
 @media (max-width: 380px) {
-  .header-actions,
+  .header-utility,
   .nav-actions {
     gap: 8px;
   }
 
   .playlist-link,
+  .youtube-link,
   .top-nav a,
   .copy-button,
   .theme-toggle {
