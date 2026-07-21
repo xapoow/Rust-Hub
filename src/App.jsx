@@ -686,43 +686,51 @@ function RaidCalculator({ raidData }) {
   }
 
   const normalizedQuantity = Math.min(100, Math.max(1, Number(quantity) || 1))
-  const results = raidData.methods.map((method) => {
-    const amount = Math.ceil((selectedTarget.costs[method.id] ?? 0) * normalizedQuantity)
-    const craftCount = Math.ceil(amount / (method.yield ?? 1))
-    const craftedAmount = craftCount * (method.yield ?? 1)
+  const results = raidData.methods
+    .filter(
+      (method) =>
+        Number.isInteger(selectedTarget.costs[method.id]) && selectedTarget.costs[method.id] > 0,
+    )
+    .map((method) => {
+      const amount = Math.ceil((selectedTarget.costs[method.id] ?? 0) * normalizedQuantity)
+      const craftCount =
+        method.craftable === false ? amount : Math.ceil(amount / (method.yield ?? 1))
+      const craftedAmount = craftCount * (method.yield ?? 1)
 
-    return {
-      ...method,
-      amount,
-      craftedAmount,
-      steps: method.craftSteps.map((step) => ({
-        ...step,
-        amount: step.amount * craftCount,
-        ingredients: Object.entries(step.ingredients).map(([resourceId, resourceAmount]) => ({
+      return {
+        ...method,
+        amount,
+        craftedAmount,
+        steps: method.craftSteps.map((step) => ({
+          ...step,
+          amount: step.amount * craftCount,
+          ingredients: Object.entries(step.ingredients).map(([resourceId, resourceAmount]) => ({
+            ...raidData.resources[resourceId],
+            amount: resourceAmount * craftCount,
+            id: resourceId,
+          })),
+          outputResource:
+            step.output === 'result'
+              ? { imageUrl: method.imageUrl, name: method.name }
+              : raidData.resources[step.output],
+        })),
+        totals: Object.entries(method.totalResources).map(([resourceId, resourceAmount]) => ({
           ...raidData.resources[resourceId],
           amount: resourceAmount * craftCount,
           id: resourceId,
         })),
-        outputResource:
-          step.output === 'result'
-            ? { imageUrl: method.imageUrl, name: method.name }
-            : raidData.resources[step.output],
-      })),
-      totals: Object.entries(method.totalResources).map(([resourceId, resourceAmount]) => ({
-        ...raidData.resources[resourceId],
-        amount: resourceAmount * craftCount,
-        id: resourceId,
-      })),
-    }
-  })
+      }
+    })
 
   const copyCalculation = async () => {
     const lines = results.map((result) => {
-      const resources = result.totals
-        .map((resource) => `${resource.name}: ${numberFormat.format(resource.amount)}`)
-        .join(', ')
+      const resources = result.totals.length
+        ? result.totals
+            .map((resource) => `${resource.name}: ${numberFormat.format(resource.amount)}`)
+            .join(', ')
+        : result.note
 
-      return `${result.name}: ${result.amount} шт. — ${resources}`
+      return `${result.name}: ${numberFormat.format(result.amount)} шт. — ${resources}`
     })
 
     await copyText(
@@ -822,49 +830,55 @@ function RaidCalculator({ raidData }) {
                   <MediaSlot className="raid-method-media" label={result.shortLabel} src={result.imageUrl} />
                   <div className="raid-method-name">
                     <strong>{result.name}</strong>
-                    <span>{result.amount} шт.</span>
+                    <span>{numberFormat.format(result.amount)} шт.</span>
                     {result.craftedAmount > result.amount ? (
-                      <small>Крафт пачками: получится {result.craftedAmount} шт.</small>
+                      <small>Крафт пачками: получится {numberFormat.format(result.craftedAmount)} шт.</small>
                     ) : null}
                   </div>
                 </div>
 
-                <ol className="raid-craft-chain" aria-label={`Цепочка крафта: ${result.name}`}>
-                  {result.steps.map((step, stepIndex) => (
-                    <li key={`${result.id}-${step.output}-${stepIndex}`}>
-                      <div className="raid-step-ingredients">
-                        {step.ingredients.map((resource) => (
-                          <ResourceAmount
-                            amount={resource.amount}
-                            key={resource.id}
-                            numberFormat={numberFormat}
-                            resource={resource}
-                          />
-                        ))}
-                      </div>
-                      <span className="raid-step-arrow" aria-hidden="true">→</span>
-                      <ResourceAmount
-                        amount={step.amount}
-                        numberFormat={numberFormat}
-                        resource={step.outputResource}
-                        result
-                      />
-                    </li>
-                  ))}
-                </ol>
+                {result.steps.length ? (
+                  <ol className="raid-craft-chain" aria-label={`Цепочка крафта: ${result.name}`}>
+                    {result.steps.map((step, stepIndex) => (
+                      <li key={`${result.id}-${step.output}-${stepIndex}`}>
+                        <div className="raid-step-ingredients">
+                          {step.ingredients.map((resource) => (
+                            <ResourceAmount
+                              amount={resource.amount}
+                              key={resource.id}
+                              numberFormat={numberFormat}
+                              resource={resource}
+                            />
+                          ))}
+                        </div>
+                        <span className="raid-step-arrow" aria-hidden="true">→</span>
+                        <ResourceAmount
+                          amount={step.amount}
+                          numberFormat={numberFormat}
+                          resource={step.outputResource}
+                          result
+                        />
+                      </li>
+                    ))}
+                  </ol>
+                ) : null}
 
                 <div className="raid-resource-total">
-                  <span>Итого ресурсов</span>
-                  <div>
-                    {result.totals.map((resource) => (
-                      <ResourceAmount
-                        amount={resource.amount}
-                        key={resource.id}
-                        numberFormat={numberFormat}
-                        resource={resource}
-                      />
-                    ))}
-                  </div>
+                  <span>{result.totals.length ? 'Итого ресурсов' : 'Получение'}</span>
+                  {result.totals.length ? (
+                    <div>
+                      {result.totals.map((resource) => (
+                        <ResourceAmount
+                          amount={resource.amount}
+                          key={resource.id}
+                          numberFormat={numberFormat}
+                          resource={resource}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="raid-method-note">{result.note}</p>
+                  )}
                 </div>
               </article>
             ))}
@@ -872,7 +886,8 @@ function RaidCalculator({ raidData }) {
 
           <p className="raid-disclaimer">
             Значения ориентировочные для твёрдой стороны построек. После обновлений баланса Rust
-            сверяйте цифры с актуальными игровыми данными.
+            сверяйте цифры с актуальными игровыми данными. Для F1 и бобовой гранаты используется
+            вариант применения ПКМ вплотную к цели.
           </p>
         </section>
       </div>

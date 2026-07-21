@@ -48,6 +48,10 @@
     "smallStash": {
       "name": "Маленький тайник",
       "imageUrl": "./media/raid/items/stash.small.webp"
+    },
+    "propaneTank": {
+      "name": "Пустой баллон пропана",
+      "imageUrl": "./media/raid/items/propanetank.webp"
     }
   },
   "methods": [
@@ -56,6 +60,7 @@
       "name": "Взрывчатка с таймером (C4)",
       "shortLabel": "C4",
       "imageUrl": "./media/raid/items/explosive.timed.webp",
+      "requiredForAllTargets": true,
       "yield": 1,
       "craftSteps": [
         {
@@ -81,6 +86,7 @@
       "name": "Ракета",
       "shortLabel": "Ракета",
       "imageUrl": "./media/raid/items/ammo.rocket.basic.webp",
+      "requiredForAllTargets": true,
       "yield": 1,
       "craftSteps": [
         {
@@ -106,6 +112,7 @@
       "name": "Сумка с зарядом",
       "shortLabel": "Сумка",
       "imageUrl": "./media/raid/items/explosive.satchel.webp",
+      "requiredForAllTargets": true,
       "yield": 1,
       "craftSteps": [
         {
@@ -136,6 +143,7 @@
       "name": "Разрывные патроны",
       "shortLabel": "5.56",
       "imageUrl": "./media/raid/items/ammo.rifle.explosive.webp",
+      "requiredForAllTargets": true,
       "yield": 2,
       "craftSteps": [
         {
@@ -150,6 +158,163 @@
         }
       ],
       "totalResources": { "sulfur": 50, "charcoal": 60, "metalFragments": 10 }
+    },
+    {
+      "id": "incendiaryRocket",
+      "name": "Зажигательная ракета",
+      "shortLabel": "Огонь",
+      "imageUrl": "./media/raid/items/ammo.rocket.fire.webp",
+      "yield": 1,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 150,
+          "ingredients": { "sulfur": 300, "charcoal": 450 }
+        },
+        {
+          "output": "result",
+          "amount": 1,
+          "ingredients": { "metalPipe": 2, "gunpowder": 150, "lowGradeFuel": 75 }
+        }
+      ],
+      "totalResources": { "sulfur": 300, "charcoal": 450, "metalPipe": 2, "lowGradeFuel": 75 }
+    },
+    {
+      "id": "molotov",
+      "name": "Коктейль Молотова",
+      "shortLabel": "Огонь",
+      "imageUrl": "./media/raid/items/grenade.molotov.webp",
+      "yield": 1,
+      "craftSteps": [
+        {
+          "output": "result",
+          "amount": 1,
+          "ingredients": { "cloth": 10, "lowGradeFuel": 50 }
+        }
+      ],
+      "totalResources": { "cloth": 10, "lowGradeFuel": 50 }
+    },
+    {
+      "id": "highVelocityRocket",
+      "name": "Скоростная ракета",
+      "shortLabel": "HV",
+      "imageUrl": "./media/raid/items/ammo.rocket.hv.webp",
+      "yield": 1,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 100,
+          "ingredients": { "sulfur": 200, "charcoal": 300 }
+        },
+        {
+          "output": "result",
+          "amount": 1,
+          "ingredients": { "metalPipe": 1, "gunpowder": 100 }
+        }
+      ],
+      "totalResources": { "sulfur": 200, "charcoal": 300, "metalPipe": 1 }
+    },
+    {
+      "id": "f1Grenade",
+      "name": "Граната F1 (ПКМ)",
+      "shortLabel": "F1",
+      "imageUrl": "./media/raid/items/grenade.f1.webp",
+      "yield": 1,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 30,
+          "ingredients": { "sulfur": 60, "charcoal": 90 }
+        },
+        {
+          "output": "result",
+          "amount": 1,
+          "ingredients": { "gunpowder": 30, "metalFragments": 25 }
+        }
+      ],
+      "totalResources": { "sulfur": 60, "charcoal": 90, "metalFragments": 25 }
+    },
+    {
+      "id": "beancanGrenade",
+      "name": "Бобовая граната (ПКМ)",
+      "shortLabel": "Бобовка",
+      "imageUrl": "./media/raid/items/grenade.beancan.webp",
+      "yield": 1,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 60,
+          "ingredients": { "sulfur": 120, "charcoal": 180 }
+        },
+        {
+          "output": "result",
+          "amount": 1,
+          "ingredients": { "gunpowder": 60, "metalFragments": 20 }
+        }
+      ],
+      "totalResources": { "sulfur": 120, "charcoal": 180, "metalFragments": 20 }
+    },
+    {
+      "id": "propaneBomb",
+      "name": "Пропановая бомба (катапульта)",
+      "shortLabel": "Бомба",
+      "imageUrl": "./media/raid/items/catapult.ammo.explosive.webp",
+      "yield": 1,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 450,
+          "ingredients": { "sulfur": 900, "charcoal": 1350 }
+        },
+        {
+          "output": "result",
+          "amount": 1,
+          "ingredients": { "gunpowder": 450, "lowGradeFuel": 20, "propaneTank": 1 }
+        }
+      ],
+      "totalResources": { "sulfur": 900, "charcoal": 1350, "lowGradeFuel": 20, "propaneTank": 1 }
+    },
+    {
+      "id": "heGrenade",
+      "name": "40-мм фугасная граната",
+      "shortLabel": "40 мм",
+      "imageUrl": "./media/raid/items/ammo.grenadelauncher.he.webp",
+      "yield": 1,
+      "craftable": false,
+      "note": "Не крафтится. В итогах указано только необходимое количество боеприпасов.",
+      "craftSteps": [],
+      "totalResources": {}
+    },
+    {
+      "id": "mlrsRocket",
+      "name": "Ракета MLRS",
+      "shortLabel": "MLRS",
+      "imageUrl": "./media/raid/items/ammo.rocket.mlrs.webp",
+      "yield": 1,
+      "craftable": false,
+      "note": "Не крафтится. В итогах указано только необходимое количество ракет.",
+      "craftSteps": [],
+      "totalResources": {}
+    },
+    {
+      "id": "torpedo",
+      "name": "Торпеда",
+      "shortLabel": "Торпеда",
+      "imageUrl": "./media/raid/items/submarine.torpedo.straight.webp",
+      "yield": 5,
+      "craftSteps": [
+        {
+          "output": "gunpowder",
+          "amount": 30,
+          "ingredients": { "sulfur": 60, "charcoal": 90 }
+        },
+        {
+          "output": "result",
+          "amount": 5,
+          "ingredients": { "gunpowder": 30, "metalPipe": 1 }
+        }
+      ],
+      "totalResources": { "sulfur": 60, "charcoal": 90, "metalPipe": 1 }
     }
   ]
 }

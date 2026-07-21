@@ -16,6 +16,7 @@ monuments/train-yard.webp
 monuments/dome.webp
 
 Иконки рейда находятся в raid/items.
+Для пустого баллона пропана можно добавить raid/items/propanetank.webp.
 Изображения целей находятся в raid/targets.
 Соответствие файлов, названий и профилей стоимости целей хранится в public/data/raid-targets.json.
 

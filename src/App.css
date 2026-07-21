@@ -914,6 +914,12 @@
   grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
 }
 
+.raid-method-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .raid-disclaimer {
   color: var(--muted);
   font-size: 12px;
