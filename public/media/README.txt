@@ -6,6 +6,10 @@
 РТ:
 monuments/launch-site.webp
 monuments/airfield.webp
+monuments/harbor.webp
+monuments/junk.webp
+monuments/military-tunnels.webp
+monuments/powerplant.webp
 monuments/water-treatment-plant.webp
 monuments/satellite-dish.webp
 monuments/train-yard.webp

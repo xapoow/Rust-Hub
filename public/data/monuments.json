@@ -37,6 +37,74 @@
       "relatedVideos": []
     },
     {
+      "id": "harbor",
+      "name": "Порт",
+      "englishName": "Harbor",
+      "tier": "Низкий тир",
+      "radiation": "Нет",
+      "cards": ["Зеленая"],
+      "requiresFuse": true,
+      "hasRecycler": true,
+      "imageUrl": "./media/monuments/harbor.webp",
+      "summary": "Прибрежная РТ с контейнерами, зеленой головоломкой, переработчиком и большим количеством открытых подходов.",
+      "tips": [
+        "Перед головоломкой возьми зеленую карту и один электрический предохранитель.",
+        "Краны и контейнеры создают много вертикальных углов, поэтому проверяй верхние позиции."
+      ],
+      "relatedVideos": []
+    },
+    {
+      "id": "junkyard",
+      "name": "Свалка",
+      "englishName": "Junkyard",
+      "tier": "Низкий тир",
+      "radiation": "Нет",
+      "cards": [],
+      "requiresFuse": false,
+      "hasRecycler": true,
+      "imageUrl": "./media/monuments/junk.webp",
+      "summary": "Доступная ранняя РТ без головоломки и радиации, удобная для сбора компонентов и быстрой переработки.",
+      "tips": [
+        "Маршрут можно проходить без защитного костюма и ключ-карт.",
+        "Открытый рельеф хорошо просматривается, но почти не дает укрытий при отходе."
+      ],
+      "relatedVideos": []
+    },
+    {
+      "id": "military-tunnels",
+      "name": "Военные тоннели",
+      "englishName": "Military Tunnels",
+      "tier": "Высокий тир",
+      "radiation": "Высокая",
+      "cards": ["Зеленая", "Синяя", "Красная"],
+      "requiresFuse": true,
+      "hasRecycler": true,
+      "imageUrl": "./media/monuments/military-tunnels.webp",
+      "summary": "Опасная подземная РТ с учеными, многоступенчатой головоломкой и высокоуровневым лутом.",
+      "tips": [
+        "Бери высокий уровень защиты от радиации, оружие, патроны и запас лечения.",
+        "Узкие тоннели ограничивают отход, поэтому заранее контролируй путь назад."
+      ],
+      "relatedVideos": []
+    },
+    {
+      "id": "power-plant",
+      "name": "Электростанция",
+      "englishName": "Power Plant",
+      "tier": "Средний тир",
+      "radiation": "Нет",
+      "cards": ["Зеленая", "Синяя"],
+      "requiresFuse": true,
+      "hasRecycler": true,
+      "imageUrl": "./media/monuments/powerplant.webp",
+      "summary": "Крупная промышленная РТ с последовательностью зеленой и синей карт, переработчиком и множеством зданий.",
+      "tips": [
+        "Для полного маршрута подготовь зеленую и синюю карты и электрический предохранитель.",
+        "Проверяй крыши и градирни: высокая позиция дает обзор почти на всю территорию."
+      ],
+      "relatedVideos": []
+    },
+    {
       "id": "water-treatment-plant",
       "name": "Очистные сооружения",
       "englishName": "Water Treatment Plant",
