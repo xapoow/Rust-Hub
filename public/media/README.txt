@@ -26,12 +26,13 @@ raid/items/powder.png
 raid/items/explosives.avif
 raid/items/grenade.beancan.webp
 raid/items/metal.fragments.webp
+raid/items/metal.refined.webp
 raid/items/metalpipe.webp
+raid/items/cloth.webp
+raid/items/techparts.webp
 
 Недостающие иконки ингредиентов:
 raid/items/lowgradefuel.webp
-raid/items/cloth.webp
-raid/items/techparts.webp
 raid/items/rope.webp
 raid/items/stash.small.webp
 
