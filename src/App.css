@@ -153,6 +153,8 @@
 .filter-chip:focus-visible,
 .favorite-button:focus-visible,
 .raid-target:focus-visible,
+.raid-target-controls input:focus,
+.raid-target-controls select:focus,
 .quantity-control input:focus {
   border-color: var(--accent);
   outline: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
@@ -588,15 +590,65 @@
   padding: 16px;
 }
 
-.raid-target-panel > h3 {
+.raid-target-panel-heading {
+  align-items: baseline;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
   font-size: 14px;
   margin-bottom: 12px;
+}
+
+.raid-target-panel-heading h3 {
+  font-size: 14px;
   text-transform: uppercase;
+}
+
+.raid-target-panel-heading span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.raid-target-controls {
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 14px;
+}
+
+.raid-target-controls label {
+  display: grid;
+  gap: 5px;
+}
+
+.raid-target-controls label > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.raid-target-controls input,
+.raid-target-controls select {
+  background: var(--button);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  color: var(--text);
+  min-height: 40px;
+  padding: 0 10px;
+  width: 100%;
 }
 
 .raid-target-list {
   display: grid;
   gap: 6px;
+  max-height: 650px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-color: var(--border) transparent;
+  scrollbar-width: thin;
 }
 
 .raid-target {
@@ -662,6 +714,12 @@
 
 .raid-target-media .media-placeholder strong {
   font-size: 10px;
+}
+
+.raid-target-empty {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 18px 6px;
 }
 
 .raid-results {
@@ -1231,6 +1289,7 @@
 
   .raid-target-list {
     grid-template-columns: 1fr 1fr;
+    max-height: 520px;
   }
 
   .watch-details {
@@ -1322,6 +1381,7 @@
 
   .raid-target-list {
     grid-template-columns: 1fr;
+    max-height: 460px;
   }
 
   .raid-results {

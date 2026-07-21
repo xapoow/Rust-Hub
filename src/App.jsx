@@ -7,6 +7,7 @@ const FETCH_INTERVAL_MS = 30 * 60 * 1000
 const MONUMENTS_URL = `${import.meta.env.BASE_URL}data/monuments.json`
 const PLAYLIST_DATA_URL = `${import.meta.env.BASE_URL}data/playlist.json`
 const RAID_DATA_URL = `${import.meta.env.BASE_URL}data/raid.json`
+const RAID_TARGETS_URL = `${import.meta.env.BASE_URL}data/raid-targets.json`
 const SITE_TITLE = 'Rust Hub'
 const THEME_STORAGE_KEY = 'rust-hub-theme'
 const TAG_RULES = [
@@ -193,10 +194,11 @@ function App() {
     async function loadHubData() {
       try {
         const cacheKey = Date.now()
-        const [playlistResponse, monumentsResponse, raidResponse] = await Promise.all([
+        const [playlistResponse, monumentsResponse, raidResponse, raidTargetsResponse] = await Promise.all([
           fetch(`${PLAYLIST_DATA_URL}?v=${cacheKey}`, { cache: 'no-store' }),
           fetch(`${MONUMENTS_URL}?v=${cacheKey}`, { cache: 'no-store' }),
           fetch(`${RAID_DATA_URL}?v=${cacheKey}`, { cache: 'no-store' }),
+          fetch(`${RAID_TARGETS_URL}?v=${cacheKey}`, { cache: 'no-store' }),
         ])
 
         if (!playlistResponse.ok) {
@@ -211,14 +213,23 @@ function App() {
           throw new Error(`Ошибка загрузки калькулятора рейда: ${raidResponse.status}`)
         }
 
-        const [playlist, monuments, raid] = await Promise.all([
+        if (!raidTargetsResponse.ok) {
+          throw new Error(`Ошибка загрузки целей рейда: ${raidTargetsResponse.status}`)
+        }
+
+        const [playlist, monuments, raid, raidTargets] = await Promise.all([
           playlistResponse.json(),
           monumentsResponse.json(),
           raidResponse.json(),
+          raidTargetsResponse.json(),
         ])
 
         if (!ignore) {
-          setHubData({ monuments, playlist, raid })
+          setHubData({
+            monuments,
+            playlist,
+            raid: { ...raid, ...raidTargets },
+          })
           setStatus('ready')
         }
       } catch (loadError) {
@@ -631,9 +642,43 @@ function MonumentPage({ monument, requestedMonumentId, theme, onThemeToggle }) {
 function RaidCalculator({ raidData }) {
   const [copied, setCopied] = useState(false)
   const [quantity, setQuantity] = useState(1)
+  const [targetGroup, setTargetGroup] = useState('all')
+  const [targetQuery, setTargetQuery] = useState('')
   const [selectedTargetId, setSelectedTargetId] = useState(raidData.targets[0]?.id ?? '')
+  const targets = useMemo(
+    () =>
+      raidData.targets.map((target) => ({
+        ...target,
+        costs: target.costs ?? raidData.costProfiles?.[target.costProfile] ?? {},
+      })),
+    [raidData.costProfiles, raidData.targets],
+  )
+  const targetGroups = useMemo(
+    () => [...new Set(targets.map((target) => target.group))],
+    [targets],
+  )
+  const visibleTargets = useMemo(() => {
+    const normalizedQuery = targetQuery.trim().toLocaleLowerCase('ru-RU')
+
+    return targets.filter((target) => {
+      const matchesGroup = targetGroup === 'all' || target.group === targetGroup
+      const searchableText = `${target.name} ${target.category} ${target.group}`.toLocaleLowerCase('ru-RU')
+
+      return matchesGroup && (!normalizedQuery || searchableText.includes(normalizedQuery))
+    })
+  }, [targetGroup, targetQuery, targets])
+
+  useEffect(() => {
+    if (
+      visibleTargets.length > 0 &&
+      !visibleTargets.some((target) => target.id === selectedTargetId)
+    ) {
+      setSelectedTargetId(visibleTargets[0].id)
+    }
+  }, [selectedTargetId, visibleTargets])
+
   const selectedTarget =
-    raidData.targets.find((target) => target.id === selectedTargetId) ?? raidData.targets[0]
+    targets.find((target) => target.id === selectedTargetId) ?? targets[0]
   const numberFormat = useMemo(() => new Intl.NumberFormat('ru-RU'), [])
 
   if (!selectedTarget) {
@@ -711,9 +756,32 @@ function RaidCalculator({ raidData }) {
 
       <div className="raid-layout">
         <section className="raid-target-panel" aria-labelledby="target-title">
-          <h3 id="target-title">Что рейдим</h3>
+          <div className="raid-target-panel-heading">
+            <h3 id="target-title">Что рейдим</h3>
+            <span>{visibleTargets.length} из {targets.length}</span>
+          </div>
+          <div className="raid-target-controls">
+            <label>
+              <span>Поиск цели</span>
+              <input
+                onChange={(event) => setTargetQuery(event.target.value)}
+                placeholder="Стена, дверь, окно..."
+                type="search"
+                value={targetQuery}
+              />
+            </label>
+            <label>
+              <span>Категория</span>
+              <select onChange={(event) => setTargetGroup(event.target.value)} value={targetGroup}>
+                <option value="all">Все категории</option>
+                {targetGroups.map((group) => (
+                  <option key={group} value={group}>{group}</option>
+                ))}
+              </select>
+            </label>
+          </div>
           <div className="raid-target-list">
-            {raidData.targets.map((target) => (
+            {visibleTargets.map((target) => (
               <button
                 aria-pressed={target.id === selectedTarget.id}
                 className={`raid-target ${target.id === selectedTarget.id ? 'active' : ''}`}
@@ -728,6 +796,9 @@ function RaidCalculator({ raidData }) {
                 </span>
               </button>
             ))}
+            {visibleTargets.length === 0 ? (
+              <p className="raid-target-empty">По этому запросу целей нет.</p>
+            ) : null}
           </div>
         </section>
 
