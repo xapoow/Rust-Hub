@@ -109,7 +109,7 @@
     },
     {
       "id": "satchel",
-      "name": "Сумка с зарядом",
+      "name": "Сачель",
       "shortLabel": "Сумка",
       "imageUrl": "./media/raid/items/explosive.satchel.webp",
       "requiredForAllTargets": true,
@@ -216,7 +216,7 @@
     },
     {
       "id": "f1Grenade",
-      "name": "Граната F1 (ПКМ)",
+      "name": "Граната F1",
       "shortLabel": "F1",
       "imageUrl": "./media/raid/items/grenade.f1.webp",
       "yield": 1,
@@ -236,7 +236,7 @@
     },
     {
       "id": "beancanGrenade",
-      "name": "Бобовая граната (ПКМ)",
+      "name": "Бобовая граната",
       "shortLabel": "Бобовка",
       "imageUrl": "./media/raid/items/grenade.beancan.webp",
       "yield": 1,
